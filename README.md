@@ -27,8 +27,15 @@ Collection of notes and scripts for the installation of a new system
 ~~~~ bash
 sudo add-apt-repository ppa:webupd8team/atom
 sudo apt-get update --fix-missing
-sudo apt-get install -y atom cmake git clang calibre darktable vlc hfsprogs texlive-full jekyll
+sudo apt-get install -y atom
+sudo apt-get install -y cmake clang calibre
+sudo apt-get install -y darktable
+sudo apt-get install -y git
+sudo apt-get install -y hfsprogs
 sudo apt-get install -y inkscape imagemagick
+sudo apt-get install -y jekyll
+sudo apt-get install -y texlive-full
+sudo apt-get install -y vlc
 ~~~~
 
 ## Configuration
