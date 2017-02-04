@@ -19,6 +19,7 @@ Collection of notes and scripts for the installation of a new system
 | TeXLive     | Complete package for TeX/LaTeX |
 | Inkscape    |  |
 | Imagemagick |  |
+| Okular      | Universal document viewer |
 | Taskwarrior |  |
  
 ## Installation of packages
@@ -35,6 +36,7 @@ sudo apt-get install -y git
 sudo apt-get install -y hfsprogs
 sudo apt-get install -y inkscape imagemagick
 sudo apt-get install -y jekyll
+sudo apt-get install -y okular
 sudo apt-get install -y taskwarrior texlive-full
 sudo apt-get install -y vlc
 ~~~~
