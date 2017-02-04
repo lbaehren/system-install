@@ -20,7 +20,9 @@ Collection of notes and scripts for the installation of a new system
 ### ... on Ubuntu Linux
 
 ~~~~ bash
-sudo apt-get install cmake git clang calibre darktable vlc hfsprogs texlive-full
+sudo add-apt-repository ppa:webupd8team/atom
+sudo apt-get update --fix-missing
+sudo apt-get install atom cmake git clang calibre darktable vlc hfsprogs texlive-full
 ~~~~
 
 ## Configuration
