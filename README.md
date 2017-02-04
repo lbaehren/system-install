@@ -46,7 +46,7 @@ sudo apt-get install -y vlc
 Configure Git:
 
 ~~~~ bash
-git config --global user.name "Lars Baehren
+git config --global user.name "Lars Baehren"
 git config --global user.email lbaehren@gmail.com
 ~~~~
 
