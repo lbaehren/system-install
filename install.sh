@@ -20,6 +20,19 @@ configure_ssh ()
   ssh-keygen -t rsa -b 4096 -C lbaehren@gmail.com
 }
 
+install_fwbackups ()
+{
+    # install required packages
+    sudo apt-get install -y gettext autotools-dev intltool python-crypto python-paramiko python-gtk2 python-glade2 python-notify cron
+    
+    # get packages sources
+    cd
+    mkdir -p CodeDevelopment/Projects/OpenSource && cd CodeDevelopment/Projects/OpenSource
+    git clone git://github.com/firewing1/fwbackups.git
+    cd fwbackups
+    ./configure --prefix=/usr/local && make && sudo make install
+}
+
 #_______________________________________________________________________________
 #  Install 'pwsafe' password store
 
