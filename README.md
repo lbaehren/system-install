@@ -13,13 +13,14 @@ Collection of notes and scripts for the installation of a new system
  - Darktable
  - VLC
  - HFS/HFS+ tools
+ - TeXLive
  
 ## Installation of packages
 
 ### ... on Ubuntu Linux
 
 ~~~~ bash
-sudo apt-get install cmake git clang calibre darktable vlc hfsprogs
+sudo apt-get install cmake git clang calibre darktable vlc hfsprogs texlive-full
 ~~~~
 
 ## Configuration
