@@ -20,6 +20,9 @@ configure_ssh ()
   ssh-keygen -t rsa -b 4096 -C lbaehren@gmail.com
 }
 
+#_______________________________________________________________________________
+#  Install 'pwsafe' password store
+
 install_pwsafe ()
 {
     cd
@@ -27,7 +30,7 @@ install_pwsafe ()
     git clone git@github.com:lbaehren/pwsafe.git && cd pwsafe
     git checkout cmake
     mkdir build && cd build
-    cmake .. && make
+    cmake -DCMAKE_INSTALL_PREFIX=/usr/local .. && make && sudo make install
 }
 
 #_______________________________________________________________________________
@@ -35,18 +38,22 @@ install_pwsafe ()
 
 sudo add-apt-repository ppa:webupd8team/atom
 sudo apt-get update --fix-missing
+sudo apt-get dist-upgrade -y
 sudo apt-get install -y \
   atom \
+  bacula \
   cmake \
   clang \
   calibre\
   darktable \
   git \
   hfsprogs \
+  htop \
   inkscape \
   imagemagick \
   jekyll \
   libreadline-dev \
+  libssl-dev \
   okular \
   taskwarrior \
   texlive-full \
