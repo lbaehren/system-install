@@ -4,19 +4,21 @@ Collection of notes and scripts for the installation of a new system
 
 ## Packages to install
 
- - Git
- - CMake
- - Clang / LLVM
- - Atom Editor
- - Calibre
- - pwsafe
- - Darktable
- - VLC
- - HFS/HFS+ tools
- - Jekyll static website generator
- - TeXLive
- - Inkscape
- - Imagemagick
+| Name        | Description                        |
+|-------------|------------------------------------|
+| Atom        | Hackable editor                    |
+| CMake       | Cross-platform configuration tool  |
+| Calibre     | eBook management tool              |
+| Darktable   | Raw images processor               |
+| Git         | Distributed version control system |
+| Clang       | C/C++ frontend to LLVM framework   |
+| pwsafe      | Pasword store                  |
+| VLC         | Multimedia player              |
+| hfsprogs    | HFS/HFS+ tools                 |
+| Jekyll      | Static website generator       |
+| TeXLive     | Complete package for TeX/LaTeX |
+| Inkscape    |  |
+| Imagemagick |  |
  
 ## Installation of packages
 
@@ -25,7 +27,8 @@ Collection of notes and scripts for the installation of a new system
 ~~~~ bash
 sudo add-apt-repository ppa:webupd8team/atom
 sudo apt-get update --fix-missing
-sudo apt-get install atom cmake git clang calibre darktable vlc hfsprogs texlive-full rubygem-jekyll inkscape imagemagick
+sudo apt-get install -y atom cmake git clang calibre darktable vlc hfsprogs texlive-full rubygem-jekyll
+sudo apt-get install -y inkscape imagemagick
 ~~~~
 
 ## Configuration
