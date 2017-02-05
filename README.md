@@ -20,8 +20,10 @@ Collection of notes and scripts for the installation of a new system
 | Inkscape    |  |
 | Imagemagick |  |
 | Okular      | Universal document viewer |
+| RawTherapee | Raw image converter and digital photo processor |
+| Luminance HDR |
 | Taskwarrior |  |
- 
+
 ## Installation of packages
 
 ### ... on Ubuntu Linux
@@ -36,6 +38,7 @@ sudo apt-get install -y git
 sudo apt-get install -y hfsprogs
 sudo apt-get install -y inkscape imagemagick
 sudo apt-get install -y jekyll
+sudo apt-get install -y luminance-hdr rawtherapee qtpfsgui
 sudo apt-get install -y okular
 sudo apt-get install -y taskwarrior texlive-full
 sudo apt-get install -y vlc
