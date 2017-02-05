@@ -20,17 +20,29 @@ configure_ssh ()
   ssh-keygen -t rsa -b 4096 -C lbaehren@gmail.com
 }
 
+#_______________________________________________________________________________
+#  Install 'fwbackups' backup utility
+
 install_fwbackups ()
 {
     # install required packages
     sudo apt-get install -y gettext autotools-dev intltool python-crypto python-paramiko python-gtk2 python-glade2 python-notify cron
-    
+
     # get packages sources
     cd
     mkdir -p CodeDevelopment/Projects/OpenSource && cd CodeDevelopment/Projects/OpenSource
-    git clone git://github.com/firewing1/fwbackups.git
-    cd fwbackups
-    ./configure --prefix=/usr/local && make && sudo make install
+
+    # check out new copy or update existing copy
+    if test -d fwbackups ; then
+      cd fwbackups
+      git pull
+    else
+      git clone git://github.com/firewing1/fwbackups.git
+      cd fwbackups
+    fi
+
+    # configure, build and install the software
+    ./autogen.sh && ./configure --prefix=/usr/local && make && sudo make install
 }
 
 #_______________________________________________________________________________
@@ -54,7 +66,6 @@ sudo apt-get update --fix-missing
 sudo apt-get dist-upgrade -y
 sudo apt-get install -y \
   atom \
-  bacula \
   cmake \
   clang \
   calibre\
@@ -67,7 +78,13 @@ sudo apt-get install -y \
   jekyll \
   libreadline-dev \
   libssl-dev \
+  luminance-hdr \
   okular \
+  qtpfsgui \
+  rawtherapee \
   taskwarrior \
   texlive-full \
   vlc
+sudo apt autoremove
+
+install_fwbackups
