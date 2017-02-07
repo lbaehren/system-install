@@ -72,6 +72,7 @@ sudo apt-get install -y \
   cppcheck \
   curl \
   darktable \
+  gfortran \
   git \
   hfsprogs \
   htop \
