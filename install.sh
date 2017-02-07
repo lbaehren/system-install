@@ -68,7 +68,9 @@ sudo apt-get install -y \
   atom \
   cmake \
   clang \
-  calibre\
+  calibre \
+  cppcheck \
+  curl \
   darktable \
   git \
   hfsprogs \
