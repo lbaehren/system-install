@@ -29,14 +29,17 @@ echo "--> Mirror contents of home directory ... done"
 # ==============================================================================
 #  Step 2 : Create a compressed, time-stamped archive of the user home directory
 #
-#  Date/Time         real         user         sys         Size   Comment
-#  ---------------   ----------   ----------   ---------   ----   ---------------------
-#  20170207-085649   65m15.746s   62m15.640s   0m53.176s     ??   run from source directory
-#  20170207-100604   62m00.851s   59m52.056s   0m50.484s    16G   run from source directory
-#  20170207-111319   77m32.869s   63m12.600s   0m52.248s    17G   run from backup disk
-#  20170207-132156   82m07.583s   64m49.276s   0m56.456s    17G   run from backup disk
-#  ---------------   ----------   ----------   ---------   ----   ---------------------
-#
+#  Date/Time         real           user          sys         Size   Comment
+#  ---------------   ------------   -----------   ---------   ----   ---------------------
+#  20170207-085649     65m15.746s    62m15.640s   0m53.176s     ??   run from source directory
+#  20170207-100604     62m00.851s    59m52.056s   0m50.484s    16G   run from source directory
+#  20170207-111319     77m32.869s    63m12.600s   0m52.248s    17G   run from backup disk
+#  20170207-132156     82m07.583s    64m49.276s   0m56.456s    17G   run from backup disk
+#  20170208-101154     75m42.138s    60m18.216s   0m57.764s    17G   run from backup disk
+#  20170209-160547    105m32.623s    67m22.432s   1m15.600s    17G   run from backup disk
+#  20170210-085405     86m51.969s    68m08.332s   1m02.584s    17G   run from backup disk
+#  20170211-182814    191m30.588s   149m53.180s   2m23.620s    42G   run from backup disk
+#  ---------------   ------------   -----------   ---------   ----   ---------------------
 
 echo "--> Creating archive '${varSnapshot}' from current snapshot ..."
 
