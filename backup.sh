@@ -16,15 +16,21 @@ echo " - Target        : ${varTarget}"
 echo " - Timestamp     : ${varTimestamp}"
 echo " - Snapshot file : ${varSnapshot}"
 
+##______________________________________________________________________________
+##  Mirror contents of home directory
+
+mirror_user_home ()
+{
+    echo "--> Mirror contents of home directory ..."
+    rsync -axuzP --delete ${varSource} /media/${varUser}/Backup\ Linux/Backup\ Ubuntu
+    echo "--> Mirror contents of home directory ... done"
+}
+
 # ==============================================================================
 #  Step 1 : Mirror the current state of the user home directory onto the backup
 #           medium
 
-echo "--> Mirror contents of home directory ..."
-
-rsync -axuzP --delete ${varSource} /media/${varUser}/Backup\ Linux/Backup\ Ubuntu
-
-echo "--> Mirror contents of home directory ... done"
+mirror_user_home
 
 # ==============================================================================
 #  Step 2 : Create a compressed, time-stamped archive of the user home directory
@@ -39,6 +45,8 @@ echo "--> Mirror contents of home directory ... done"
 #  20170209-160547    105m32.623s    67m22.432s   1m15.600s    17G   run from backup disk
 #  20170210-085405     86m51.969s    68m08.332s   1m02.584s    17G   run from backup disk
 #  20170211-182814    191m30.588s   149m53.180s   2m23.620s    42G   run from backup disk
+#  20170213-074803    246m48.037s   128m31.676s   2m05.272s    36G   run from backup disk
+#  20170213-192732    143m19.795s   123m40.620s   1m44.064s    ??
 #  ---------------   ------------   -----------   ---------   ----   ---------------------
 
 echo "--> Creating archive '${varSnapshot}' from current snapshot ..."
