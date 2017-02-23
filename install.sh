@@ -1,12 +1,110 @@
 #!/bin/bash
+# ----------------------------------------------------------------------------------------
+# (c) Lars Baehren <lbaehren@gmail.com> (2017).
+# All Rights Reserved.
+# This software is distributed under the BSD 2-clause license.
+# ----------------------------------------------------------------------------------------
 
-#_______________________________________________________________________________
-#  Configure Git
+cmd_dnf="dnf install --allowerasing -y"
 
-configure_git ()
+## === Determine OS ======================================================================
+
+varOS=""
+
+if test -f /etc/os-release ; then
+    varName=`cat /etc/os-release | grep NAME | grep -v PRETTY | grep -v CODENAME | grep -v CPE_NAME`
+    if test `echo ${varName} | grep Ubuntu` ; then
+        varOS="ubuntu"
+    elif test `echo ${varName} | grep Fedora` ; then
+        varOS="fedora"
+    fi
+elif test -f /etc/debian_version ; then
+    varOS="ubuntu"
+elif test -f /etc/fedora-release ; then
+  varOS="fedora"
+elif test -f /etc/SuSE-release ; then
+    varOS="opensuse"
+fi
+
+## =======================================================================================
+##
+##  Functions
+##
+## =======================================================================================
+
+#_________________________________________________________________________________________
+#  Install development packages
+
+install_packages_devel ()
 {
-  git config --global user.name "Lars Baehren"
-  git config --global user.email lbaehren@gmail.com
+    echo "-- Installing development packages ..."
+    case ${varOS} in
+        "fedora")
+            ${cmd_dnf} \
+                cppcheck \
+                clang \
+                cmake \
+                curl \
+                gcc-gfortran \
+                git \
+                intltool \
+                readline-devel \
+                ruby-devel
+            ;;
+        "ubuntu")
+            sudo apt-get install -y \
+                cppcheck \
+                clang \
+                cmake \
+                curl \
+                gfortran \
+                git \
+                intltool \
+                libreadline-dev \
+                ruby-dev
+            ;;
+    esac
+
+    # Configure Git
+    git config --global user.name "Lars Baehren"
+    git config --global user.email lbaehren@gmail.com
+
+    echo "-- Installing development packages ... done"
+}
+
+#_________________________________________________________________________________________
+#  Install multimedia packages (audio, video, imaging)
+
+install_packages_multimedia ()
+{
+    echo "-- Installing multimedia packages ..."
+
+    case ${varOS} in
+        "fedora")
+            ${cmd_dnf} \
+                calibre \
+                darktable \
+                inkscape \
+                luminance-hdr \
+                rawtherapee
+            ;;
+        "ubuntu")
+            sudo apt-get install -y \
+                calibre \
+                darktable \
+                inkscape \
+                luminance-hdr \
+                rawtherapee
+            ;;
+    esac
+
+    echo "-- Installing multimedia packages ... done"
+}
+
+install_packages ()
+{
+    install_packages_devel
+    install_packages_multimedia
 }
 
 #_______________________________________________________________________________
@@ -26,7 +124,14 @@ configure_ssh ()
 install_fwbackups ()
 {
     # install required packages
-    sudo apt-get install -y gettext autotools-dev intltool python-crypto python-paramiko python-gtk2 python-glade2 python-notify cron
+    case ${varOS} in
+        "fedora")
+            ${cmd_dnf} autogen automake gettext intltool cron
+            ;;
+        "ubuntu")
+            sudo apt-get install -y gettext autotools-dev python-crypto python-paramiko python-gtk2 python-glade2 python-notify cron
+            ;;
+    esac
 
     # get packages sources
     cd
@@ -58,36 +163,61 @@ install_pwsafe ()
     cmake -DCMAKE_INSTALL_PREFIX=/usr/local .. && make && sudo make install
 }
 
-#_______________________________________________________________________________
-#  Install packages via system's package manager
+install_fedora ()
+{
+    echo "-- Installing system packages for Fedora Linux ..."
+    dnf update -y
+    ${cmd_dnf} \
+        autogen \
+        davfs2 \
+        graphviz \
+        hfsplusutils \
+        htop \
+        libtool \
+        okular \
+        task \
+        texlive
+    echo "-- Installing system packages for Fedora Linux ... done"
+}
 
-sudo add-apt-repository ppa:webupd8team/atom
-sudo apt-get update --fix-missing
-sudo apt-get dist-upgrade -y
-sudo apt-get install -y \
-  atom \
-  cmake \
-  clang \
-  calibre \
-  cppcheck \
-  curl \
-  darktable \
-  gfortran \
-  git \
-  hfsprogs \
-  htop \
-  inkscape \
-  imagemagick \
-  jekyll \
-  libreadline-dev \
-  libssl-dev \
-  luminance-hdr \
-  okular \
-  qtpfsgui \
-  rawtherapee \
-  taskwarrior \
-  texlive-full \
-  vlc
-sudo apt autoremove
+## Install packages for Ubuntu
+install_ubuntu ()
+{
+    sudo add-apt-repository ppa:webupd8team/atom
+    sudo apt-get update --fix-missing
+    sudo apt-get dist-upgrade -y
+    sudo apt-get install -y \
+      atom \
+      hfsprogs \
+      htop \
+      imagemagick \
+      jekyll \
+      libssl-dev \
+      okular \
+      qtpfsgui \
+      taskwarrior \
+      texlive-full \
+      vlc
+    sudo apt autoremove
+}
 
-install_fwbackups
+## =======================================================================================
+##
+##  Script main
+##
+## =======================================================================================
+
+case ${varOS} in
+    "fedora")
+        install_fedora
+        ;;
+    "ubuntu")
+        install_ubuntu
+        ;;
+    *)
+        echo "Unsupported OS."
+        ;;
+esac
+
+install_packages
+# install_fwbackups
