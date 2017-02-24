@@ -45,6 +45,7 @@ install_packages_devel ()
                 clang \
                 cmake \
                 curl \
+                docker \
                 gcc-gfortran \
                 git \
                 intltool \
@@ -57,6 +58,7 @@ install_packages_devel ()
                 clang \
                 cmake \
                 curl \
+                docker \
                 gfortran \
                 git \
                 intltool \
@@ -105,6 +107,8 @@ install_packages ()
 {
     install_packages_devel
     install_packages_multimedia
+
+    install_timew
 }
 
 #_______________________________________________________________________________
@@ -150,6 +154,18 @@ install_fwbackups ()
     ./autogen.sh && ./configure --prefix=/usr/local && make && sudo make install
 }
 
+install_timew ()
+{
+    basedir=`pwd`
+    wget -c https://taskwarrior.org/download/timew-1.0.0.tar.gz
+    tar -xvzf timew-1.0.0.tar.gz
+    cd timew-1.0.0
+    mkdir build && cd build
+    cmake -DCMAKE_INSTALL_PREFIX=/usr/local .. && make -j2 && make install
+
+    cd ${basedir} && rm -rf timew-1.0.*
+}
+
 #_______________________________________________________________________________
 #  Install 'pwsafe' password store
 
@@ -175,6 +191,7 @@ install_fedora ()
         htop \
         libtool \
         okular \
+        pwsafe \
         task \
         texlive
     echo "-- Installing system packages for Fedora Linux ... done"
