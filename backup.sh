@@ -49,6 +49,9 @@ mirror_user_home
 #  20170213-192732    143m19.795s   123m40.620s   1m44.064s    36G   run from backup disk
 #  20170215-011802    148m18.714s   125m41.912s   1m56.704s    36G   run from backup disk
 #  20170215-123717    217m48.614s   135m28.764s   3m38.892s    36G   run from backup disk
+#  20170216-184941    145m35.027s   122m33.324s   1m38.344s
+#  20170218-012446    201m32.736s   154m03.540s   2m08.340s    37G   run from backup disk
+#  20170218-071937    142m40.441s   120m22.068s   1m34.524s
 #  ---------------   ------------   -----------   ---------   ----   ---------------------
 
 echo "--> Creating archive '${varSnapshot}' from current snapshot ..."
