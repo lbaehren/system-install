@@ -1,29 +1,79 @@
-#-------------------------------------------------------------------------------
+#-----------------------------------------------------------------------------------------
 # (c) Lars Baehren <lbaehren@gmail.com> (2017). All Rights Reserved.
 # This software is distributed under the BSD 2-clause license.
-#-------------------------------------------------------------------------------
+#-----------------------------------------------------------------------------------------
+
+##________________________________________________________________________________________
+##  Determine OS
+
+varOS=""
+
+if test -f /etc/os-release ; then
+    varName=`cat /etc/os-release | grep NAME | grep -v PRETTY | grep -v CODENAME | grep -v CPE_NAME`
+    if test `echo ${varName} | grep Ubuntu` ; then
+        varOS="ubuntu"
+    elif test `echo ${varName} | grep Fedora` ; then
+        varOS="fedora"
+    fi
+elif test -f /etc/debian_version ; then
+    varOS="ubuntu"
+elif test -f /etc/fedora-release ; then
+    varOS="fedora"
+elif test -f /etc/SuSE-release ; then
+    varOS="opensuse"
+fi
+
+##________________________________________________________________________________________
+##
 
 varUser=`whoami`
 varSource=/home/${varUser}
-varTarget=/media/${varUser}/Backup\\\ Linux/Backup\\\ Ubuntu
+varTarget=/run/media/${varUser}/BackupToshiba/Fedora-25
 varTimestamp=`date +%Y%m%d-%H%M%S`
-varSnapshot=${varUser}-${varTimestamp}.tar.bzip2
+varSnapshot=${varUser}-${varOS}-${varTimestamp}.tar.bzip2
+
+## Report configuration
 
 echo "--> Configuration for backup ..."
-echo " - User name     : ${varUser}"
-echo " - Source        : ${varSource}"
-echo " - Target        : ${varTarget}"
-echo " - Timestamp     : ${varTimestamp}"
-echo " - Snapshot file : ${varSnapshot}"
+echo " - Operating system : ${varOS}"
+echo " - User name        : ${varUser}"
+echo " - Source           : ${varSource}"
+echo " - Target           : ${varTarget}"
+echo " - Timestamp        : ${varTimestamp}"
+echo " - Snapshot file    : ${varSnapshot}"
 
-##______________________________________________________________________________
+##________________________________________________________________________________________
 ##  Mirror contents of home directory
 
 mirror_user_home ()
 {
     echo "--> Mirror contents of home directory ..."
-    rsync -axuzP --delete ${varSource} /media/${varUser}/Backup\ Linux/Backup\ Ubuntu
+    rsync -axuzP --delete --exclude Videos --exclude Music ${varSource} ${varTarget}
     echo "--> Mirror contents of home directory ... done"
+}
+
+##________________________________________________________________________________________
+##  Create archive from current snapshot
+
+archive_snapshot ()
+{
+    echo "--> Creating archive '${varSnapshot}' from current snapshot ..."
+
+    # ----------------------------------------------------------------
+    # Variant 1 : Run archive creation directly off the source directory (varSource)
+    # ----------------------------------------------------------------
+
+    # cd /home
+    # time tar -cjf /media/${varUser}/Backup\ Linux/Backup\ Ubuntu/${varSnapshot} ${varUser}
+
+    # ----------------------------------------------------------------
+    # Variant 2 : Create compressed archive from previously created snapshot.
+    # ----------------------------------------------------------------
+
+    cd ${varTarget}
+    time tar -cjf ${varSnapshot} ${varUser}
+
+    echo "--> Creating archive '${varSnapshot}' from current snapshot ... done"
 }
 
 # ==============================================================================
@@ -51,23 +101,7 @@ mirror_user_home
 #  20170215-123717    217m48.614s   135m28.764s   3m38.892s    36G   run from backup disk
 #  20170216-184941    145m35.027s   122m33.324s   1m38.344s
 #  20170218-012446    201m32.736s   154m03.540s   2m08.340s    37G   run from backup disk
-#  20170218-071937    142m40.441s   120m22.068s   1m34.524s
+#  20170301-214008    256m48.850s   223m57.830s   3m33.418s
 #  ---------------   ------------   -----------   ---------   ----   ---------------------
 
-echo "--> Creating archive '${varSnapshot}' from current snapshot ..."
-
-# ---------------------------------------------------------
-# Variant 1 : Run archive creation directly off the source directory (varSource)
-# ---------------------------------------------------------
-
-# cd /home
-# time tar -cjf /media/${varUser}/Backup\ Linux/Backup\ Ubuntu/${varSnapshot} ${varUser}
-
-# ---------------------------------------------------------
-# Variant 2 : Create compressed archive from previously created snapshot.
-# ---------------------------------------------------------
-
-cd /media/${varUser}/Backup\ Linux/Backup\ Ubuntu
-time tar -cjf ${varSnapshot} ${varUser}
-
-echo "--> Creating archive '${varSnapshot}' from current snapshot ... done"
+archive_snapshot
