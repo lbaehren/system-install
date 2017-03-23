@@ -45,24 +45,28 @@ get_os:
 
 help:
 	@echo "The following are valid targets for this Makefile:"
-	@echo " config   --  Show (system) configuration"
-	@echo " backup   --  Backup of home directory onto external media"
+	@echo " config          --  Show (system) configuration"
+	@echo " backup          --  Backup of home directory onto external media"
+	@echo " install_pwsafe  --  Install 'pwsafe' password store from source"
+	@echo " install_timew   --  Install 'timew' time-tracking tool from source"
 
 ##________________________________________________________________________________________
 ##  Show (system) configuration
 
 config:
 	@echo "-- Project configuration:"
-	@echo "  - User ID           ..... : ${varUserID}"
-	@echo "  - User name         ..... : ${varUserName}"
+	@echo "  - User ID   ............. : ${varUserID}"
+	@echo "  - User name ............. : ${varUserName}"
 	@echo "  - Backup source dir ..... : ${varSourceDir}"
-	@echo "  - Backup timestamp  ..... : ${varTimestamp}"
+	@echo "  - Backup timestamp ...... : ${varTimestamp}"
 	@echo "  - Backup snapshot archive : ${varSnapshot}"
 	@echo "-- System configuration:"
-	@echo "  - Platform name    ...... : ${varPlatform}"
+	@echo "  - Platform name ......... : ${varPlatform}"
 	@echo "  - Operating system ...... : ${varOS}"
-	@echo "  - Kernel release   ...... : ${varKernelRelease}"
-	@echo "  - Kernel version   ...... : ${varKernelVersion}"
+	@echo "  - Kernel release ........ : ${varKernelRelease}"
+	@echo "  - Kernel version ........ : ${varKernelVersion}"
+	@echo "  - GNU C compiler (gcc) .. : `which gcc` (`gcc --version | head -n 1`)"
+	@echo "  - GNU C++ compiler (g++)  : `which g++` (`g++ --version | head -n 1`)"
 
 ## =======================================================================================
 ##
