@@ -32,6 +32,19 @@ fi
 ##
 ## =======================================================================================
 
+# drobo-utils.noarch     : Utilities for managing Drobo storage systems
+# drobo-utils-gui.noarch : GUI utilities for managing Drobo storage systems
+
+install_packages ()
+{
+    install_packages_devel
+    install_packages_multimedia
+
+    make install_pwsafe
+    make install_timew
+    install_texlive
+}
+
 #_________________________________________________________________________________________
 #  Install development packages
 
@@ -48,9 +61,12 @@ install_packages_devel ()
                 docker \
                 gcc-gfortran \
                 git \
+                gitk \
                 intltool \
+                nano \
                 readline-devel \
-                ruby-devel
+                ruby-devel \
+                vagrant
             ;;
         "ubuntu")
             sudo apt-get install -y \
@@ -61,15 +77,19 @@ install_packages_devel ()
                 docker \
                 gfortran \
                 git \
+                gitk \
                 intltool \
                 libreadline-dev \
-                ruby-dev
+                nano \
+                ruby-dev \
+                vagrant
             ;;
     esac
 
     # Configure Git
     git config --global user.name "Lars Baehren"
     git config --global user.email lbaehren@gmail.com
+    git config --global core.editor "nano"
 
     echo "-- Installing development packages ... done"
 }
@@ -86,6 +106,7 @@ install_packages_multimedia ()
             ${cmd_dnf} \
                 calibre \
                 darktable \
+                gimp \
                 inkscape \
                 luminance-hdr \
                 rawtherapee
@@ -94,6 +115,7 @@ install_packages_multimedia ()
             sudo apt-get install -y \
                 calibre \
                 darktable \
+                gimp \
                 inkscape \
                 luminance-hdr \
                 rawtherapee
@@ -103,15 +125,7 @@ install_packages_multimedia ()
     echo "-- Installing multimedia packages ... done"
 }
 
-install_packages ()
-{
-    install_packages_devel
-    install_packages_multimedia
-
-    install_timew
-}
-
-#_______________________________________________________________________________
+#_________________________________________________________________________________________
 #  Create SSH key (e.g. for remote login)
 
 configure_ssh ()
@@ -122,7 +136,7 @@ configure_ssh ()
   ssh-keygen -t rsa -b 4096 -C lbaehren@gmail.com
 }
 
-#_______________________________________________________________________________
+#_________________________________________________________________________________________
 #  Install 'fwbackups' backup utility
 
 install_fwbackups ()
@@ -154,52 +168,54 @@ install_fwbackups ()
     ./autogen.sh && ./configure --prefix=/usr/local && make && sudo make install
 }
 
-install_timew ()
-{
-    basedir=`pwd`
-    wget -c https://taskwarrior.org/download/timew-1.0.0.tar.gz
-    tar -xvzf timew-1.0.0.tar.gz
-    cd timew-1.0.0
-    mkdir build && cd build
-    cmake -DCMAKE_INSTALL_PREFIX=/usr/local .. && make -j2 && make install
+#_________________________________________________________________________________________
+#  Install TexLive
 
-    cd ${basedir} && rm -rf timew-1.0.*
+install_texlive ()
+{
+    varYear=`date =%Y`
+
+    wget -c http://mirror.ctan.org/systems/texlive/tlnet/install-tl-unx.tar.gz
+    tar -xvzf install-tl-unx.tar.gz
+    cd install-tl-${varYear}* && ./install-tl
+
 }
 
-#_______________________________________________________________________________
-#  Install 'pwsafe' password store
-
-install_pwsafe ()
-{
-    cd
-    mkdir -p CodeDevelopment/Projects/Private && cd CodeDevelopment/Projects/Private
-    git clone git@github.com:lbaehren/pwsafe.git && cd pwsafe
-    git checkout cmake
-    mkdir build && cd build
-    cmake -DCMAKE_INSTALL_PREFIX=/usr/local .. && make && sudo make install
-}
+#_________________________________________________________________________________________
+#  Install packages for Fedora
 
 install_fedora ()
 {
-    echo "-- Installing system packages for Fedora Linux ..."
+    dnf config-manager --add-repo=http://negativo17.org/repos/fedora-multimedia.repo
+
+    echo "-- Installing system packages for Fedora ..."
+
     dnf update -y
     ${cmd_dnf} \
         autogen \
         davfs2 \
+        drobo-utils \
+        drobo-utils-gui \
         graphviz \
         hfsplusutils \
         htop \
         libtool \
         okular \
-        pwsafe \
+        openssl-devel \
+        simple-mtpfs \
         task \
         texlive
-    echo "-- Installing system packages for Fedora Linux ... done"
+
+    echo "-- Installing system packages for Fedora ... done"
 }
 
-## Install packages for Ubuntu
+#_________________________________________________________________________________________
+#  Install packages for Ubuntu
+
 install_ubuntu ()
 {
+    echo "-- Installing system packages for Ubuntu ..."
+
     sudo add-apt-repository ppa:webupd8team/atom
     sudo apt-get update --fix-missing
     sudo apt-get dist-upgrade -y
@@ -211,11 +227,14 @@ install_ubuntu ()
       jekyll \
       libssl-dev \
       okular \
+      openssl-dev \
       qtpfsgui \
       taskwarrior \
       texlive-full \
       vlc
     sudo apt autoremove
+
+    echo "-- Installing system packages for Ubuntu ... done"
 }
 
 ## =======================================================================================
