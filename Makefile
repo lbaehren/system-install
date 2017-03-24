@@ -103,7 +103,7 @@ backup_usb1:
 		rsync -axuzP --delete --exclude Videos --exclude Music --exclude=*.ova --exclude=".DS_Store" ${varSourceDir} . ; \
 		echo "--> Creating archive '${varSnapshot}' from current snapshot ..." ; \
 		time tar -cjf ${varSnapshot} ${varUserName} ; \
-		echo "--> Creating archive '${varSnapshot}' from current snapshot ..."
+		echo "--> Creating archive '${varSnapshot}' from current snapshot ..." ; \
 	fi
 
 ## =======================================================================================
