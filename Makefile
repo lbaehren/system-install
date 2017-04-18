@@ -18,7 +18,9 @@ varSourceDir=/home/${varUserName}
 varTimestamp=`date +%Y%m%d-%H%M%S`
 varSnapshot=${varUserName}-${varTimestamp}.tar.bzip2
 
-.SILENT: get_os backup_drobo1 backup_usb1 install_timew
+cmdRsync=rsync -axuzP --delete --exclude Videos --exclude Music --exclude .DS_Store
+
+.SILENT: get_os backup_drobo1 backup_usb1 backup_usb2 install_timew
 
 ##________________________________________________________________________________________
 ##  Determine OS
@@ -47,6 +49,9 @@ help:
 	@echo "The following are valid targets for this Makefile:"
 	@echo " config          --  Show (system) configuration"
 	@echo " backup          --  Backup of home directory onto external media"
+	@echo " backup_drobo1   --  Backup of home directory onto 'Drobo 1'"
+	@echo " backup_usb1     --  Backup of home directory onto 'Toshiba 1TB' external drive"
+	@echo " backup_usb2     --  Backup of home directory onto 'Maxtor 2TB' external drive"
 	@echo " install_pwsafe  --  Install 'pwsafe' password store from source"
 	@echo " install_timew   --  Install 'timew' time-tracking tool from source"
 
@@ -77,7 +82,7 @@ config:
 ##________________________________________________________________________________________
 ##  Backup home directory
 
-backup: backup_drobo1 backup_usb1
+backup: backup_drobo1 backup_usb1 backup_usb2
 
 ##________________________________________________________________________________________
 ##  Backup to 'Drobo Gen 1'
@@ -87,9 +92,10 @@ backup_drobo1:
 	if [ -d "$$varTarget" ] ; then \
 		echo "--> Found 'Drobo Gen 1' - starting backup of ${varSourceDir} ..." ; \
 		cd "$$varTarget" ; \
-		rsync -axuzP --delete --exclude Videos --exclude Music --exclude=*.ova --exclude=".DS_Store" ${varSourceDir} . ; \
-		time tar -cjf ${varSnapshot} ${varUserName} ; \
-		echo "--> Backup of ${varSourceDir} complete." ; \
+		${cmdRsync} ${varSourceDir} . ; \
+		echo "--> Creating archive '${varSnapshot}' from current snapshot ..." ; \
+		time tar --exclude=Videos --exclude=Music -cjf ${varSnapshot} ${varSourceDir} ; \
+		echo "--> Creating archive '${varSnapshot}' from current snapshot ... done" ; \
 	fi
 
 ##________________________________________________________________________________________
@@ -100,10 +106,24 @@ backup_usb1:
 	if [ -d "$$varTarget" ] ; then \
 		echo "--> Found 'Toshiba1TB' - starting backup of ${varSourceDir} ..." ; \
 		cd "$$varTarget" ; \
-		rsync -axuzP --delete --exclude Videos --exclude Music --exclude=*.ova --exclude=".DS_Store" ${varSourceDir} . ; \
+		${cmdRsync} ${varSourceDir} . ; \
 		echo "--> Creating archive '${varSnapshot}' from current snapshot ..." ; \
-		time tar -cjf ${varSnapshot} ${varUserName} ; \
+		time tar --exclude=Videos --exclude=Music -cjf ${varSnapshot} ${varSourceDir} ; \
+		echo "--> Creating archive '${varSnapshot}' from current snapshot ... done" ; \
+	fi
+
+##________________________________________________________________________________________
+##  Backup to 'Toshiba 1TB' external USB drive
+
+backup_usb2:
+	varTarget="/run/media/${varUserName}/Maxtor2TB/Backups/${varOS}" ; \
+	if [ -d "$$varTarget" ] ; then \
+		echo "--> Found 'Maxtor2TB' - starting backup of ${varSourceDir} ..." ; \
+		cd "$$varTarget" ; \
+		${cmdRsync} ${varSourceDir} . ; \
 		echo "--> Creating archive '${varSnapshot}' from current snapshot ..." ; \
+		time tar --exclude=Videos --exclude=Music -cjf ${varSnapshot} ${varSourceDir} ; \
+		echo "--> Creating archive '${varSnapshot}' from current snapshot ... done" ; \
 	fi
 
 ## =======================================================================================
