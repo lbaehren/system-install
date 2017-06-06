@@ -1,0 +1,140 @@
+#!/bin/bash
+
+# ==============================================================================
+#
+#  Definition of functions
+#
+# ==============================================================================
+
+#____________________________________________________________________
+#  Show help message
+
+show_help ()
+{
+    echo "Usage: ./convert_audio [options]"
+    echo ""
+    echo " -H|--help           Show this help and exit."
+    echo " -I|--input          Input directory with files to convert."
+    echo " -O|--output         Output directory input which to place converted files."
+    echo " -E|--extract-audio  Extract audio track from video data."
+    echo " -F|--flac           Convert input audio files to Flac."
+    echo " -M|--mp3            Convert input audio files to Mp3."
+}
+
+set_dir_output ()
+{
+    basedir=`pwd`
+
+    cd "${varOptionOutput}"
+
+    varOptionOutput=`pwd`
+
+    cd "${basedir}"
+}
+
+#____________________________________________________________________
+#  Convert audio data from raw format (AIFF, WAV) to FLAC
+
+convert_to_flac ()
+{
+    dir_in="$1"
+    dir_out="$2"
+
+    ls | grep "[aif|aiff|wav]" | grep -v convert | while read line; do
+        outfile=`echo $line | sed s/".wav"/".flac"/ | sed s/".aiff"/".flac"/ | sed s/".aif"/".flac"/`
+        varTrack=`echo $outfile | grep -Eo '^[^ ]+'`
+        echo " :: ${varTrack} ::  \"$line\" -> \"$outfile\""
+        /opt/local/bin/flac --best -e "$line" -o "$outfile"
+    done
+}
+
+#____________________________________________________________________
+#  Convert audio data from raw format (AIFF, WAV) to FLAC
+
+convert_to_mp3 ()
+{
+    dir_in="$1"
+    dir_out="$2"
+
+    ls | grep "[aif|aiff|wav]" | grep -v convert | grep -v ".flac" | while read line; do
+        outfile=`echo $line | sed s/".wav"/".mp3"/ | sed s/".aiff"/".mp3"/ | sed s/".aif"/".mp3"/`
+        varTrack=`echo $outfile | grep -Eo '^[^ ]+'`
+        echo " :: ${varTrack} ::  \"$line\" -> \"$outfile\""
+        /opt/local/bin/lame -V0 -h -b 160 --vbr-new "$line" "$outfile"
+    done
+}
+
+#____________________________________________________________________
+#  Extract audio track from mixed media (e.g. mp4 video)
+
+extract_audio ()
+{
+    ffmpeg -i "$1" -vn -c:a copy "$2"
+}
+
+## =============================================================================
+##
+##   Command line options
+##
+## =============================================================================
+
+varOptionInput="."
+varOptionOutput="."
+varConvertToFlac=0
+varConvertToMp3=0
+varExtractAudio=0
+
+TEMP=`getopt -o H,I:,O:,,E::F,M --long help,input:,output:,extract-audio::,flac,mp3 -n 'test.sh' -- "$@"`
+eval set -- "$TEMP"
+
+#_____________________________________________________________________
+# extract options and their arguments into variables.
+
+while true ; do
+    case "$1" in
+        -H|--help)
+            show_help
+            exit 0
+            ;;
+        -I|--input)
+            varOptionInput="$2"
+            shift 2
+            ;;
+        -O|--output)
+            varOptionOutput="$2"
+            shift 2
+            ;;
+        -E|--extract-audio)
+            varOptionInput="$2"
+            varOptionOutput="$3"
+            shift 3
+            ;;
+        -F|--flac)
+            varConvertToFlac=1
+            shift
+            ;;
+        -M|--mp3)
+            varConvertToMp3=1
+            shift
+            ;;
+        --) shift ; break ;;
+        *) echo "Internal error!" ; exit 1 ;;
+    esac
+done
+
+## === Process command line options ============================================
+
+if test ${varExtractAudio} -gt 0 ; then
+    extract_audio ${varOptionInput} ${varOptionOutput}
+    exit 0
+fi
+
+if test ${varConvertToFlac} -gt 0 ; then
+    convert_to_flac ${varOptionInput} ${varOptionOutput}
+    exit 0
+fi
+
+if test ${varConvertToMp3} -gt 0 ; then
+    convert_to_mp3 ${varOptionInput} ${varOptionOutput}
+    exit 0
+fi
