@@ -18,7 +18,7 @@ varSourceDir=/home/${varUserName}
 varTimestamp=`date +%Y%m%d-%H%M%S`
 varSnapshot=${varUserName}-${varTimestamp}.tar.bzip2
 
-cmdRsync=rsync -axuzP --delete --exclude Videos --exclude Music --exclude .DS_Store
+cmdRsync=rsync -axuzP --delete --exclude Videos --exclude .DS_Store
 
 .SILENT: get_os backup_drobo1 backup_usb1 backup_usb2 install_timew
 
@@ -113,7 +113,7 @@ backup_usb1:
 	fi
 
 ##________________________________________________________________________________________
-##  Backup to 'Toshiba 1TB' external USB drive
+##  Backup to 'Matrox 2TB' external USB drive
 
 backup_usb2:
 	varTarget="/run/media/${varUserName}/Maxtor2TB/Backups/${varOS}" ; \
@@ -122,7 +122,7 @@ backup_usb2:
 		cd "$$varTarget" ; \
 		${cmdRsync} ${varSourceDir} . ; \
 		echo "--> Creating archive '${varSnapshot}' from current snapshot ..." ; \
-		time tar --exclude=Videos --exclude=Music -cjf ${varSnapshot} ${varSourceDir} ; \
+		time tar --exclude=Videos --exclude=Music --exclude=*.vdi -cjf ${varSnapshot} ${varSourceDir} ; \
 		echo "--> Creating archive '${varSnapshot}' from current snapshot ... done" ; \
 	fi
 
