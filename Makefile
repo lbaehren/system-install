@@ -47,31 +47,12 @@ get_os:
 
 help:
 	@echo "The following are valid targets for this Makefile:"
-	@echo " config          --  Show (system) configuration"
 	@echo " backup          --  Backup of home directory onto external media"
 	@echo " backup_drobo1   --  Backup of home directory onto 'Drobo 1'"
 	@echo " backup_usb1     --  Backup of home directory onto 'Toshiba 1TB' external drive"
 	@echo " backup_usb2     --  Backup of home directory onto 'Maxtor 2TB' external drive"
 	@echo " install_pwsafe  --  Install 'pwsafe' password store from source"
 	@echo " install_timew   --  Install 'timew' time-tracking tool from source"
-
-##________________________________________________________________________________________
-##  Show (system) configuration
-
-config:
-	@echo "-- Project configuration:"
-	@echo "  - User ID   ............. : ${varUserID}"
-	@echo "  - User name ............. : ${varUserName}"
-	@echo "  - Backup source dir ..... : ${varSourceDir}"
-	@echo "  - Backup timestamp ...... : ${varTimestamp}"
-	@echo "  - Backup snapshot archive : ${varSnapshot}"
-	@echo "-- System configuration:"
-	@echo "  - Platform name ......... : ${varPlatform}"
-	@echo "  - Operating system ...... : ${varOS}"
-	@echo "  - Kernel release ........ : ${varKernelRelease}"
-	@echo "  - Kernel version ........ : ${varKernelVersion}"
-	@echo "  - GNU C compiler (gcc) .. : `which gcc` (`gcc --version | head -n 1`)"
-	@echo "  - GNU C++ compiler (g++)  : `which g++` (`g++ --version | head -n 1`)"
 
 ## =======================================================================================
 ##
