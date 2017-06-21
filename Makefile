@@ -18,7 +18,8 @@ varSourceDir=/home/${varUserName}
 varTimestamp=`date +%Y%m%d-%H%M%S`
 varSnapshot=${varUserName}-${varTimestamp}.tar.bzip2
 
-cmdRsync=rsync -axuzP --delete --exclude Videos --exclude .DS_Store
+cmd_rsync=rsync -axuzP --delete --exclude Videos --exclude .DS_Store
+cmd_tar=tar --exclude=Videos --exclude=Music --exclude=*.vdi -cvjf
 
 .SILENT: get_os backup_drobo1 backup_usb1 backup_usb2 install_timew
 
@@ -73,9 +74,9 @@ backup_drobo1:
 	if [ -d "$$varTarget" ] ; then \
 		echo "--> Found 'Drobo Gen 1' - starting backup of ${varSourceDir} ..." ; \
 		cd "$$varTarget" ; \
-		${cmdRsync} ${varSourceDir} . ; \
+		${cmd_rsync} ${varSourceDir} . ; \
 		echo "--> Creating archive '${varSnapshot}' from current snapshot ..." ; \
-		time tar --exclude=Videos --exclude=Music -cjf ${varSnapshot} ${varSourceDir} ; \
+		time ${cmd_tar} ${varSnapshot} ${varSourceDir} ; \
 		echo "--> Creating archive '${varSnapshot}' from current snapshot ... done" ; \
 	fi
 
@@ -87,9 +88,9 @@ backup_usb1:
 	if [ -d "$$varTarget" ] ; then \
 		echo "--> Found 'Toshiba1TB' - starting backup of ${varSourceDir} ..." ; \
 		cd "$$varTarget" ; \
-		${cmdRsync} ${varSourceDir} . ; \
+		${cmd_rsync} ${varSourceDir} . ; \
 		echo "--> Creating archive '${varSnapshot}' from current snapshot ..." ; \
-		time tar --exclude=Videos --exclude=Music -cjf ${varSnapshot} ${varSourceDir} ; \
+		time ${cmd_tar} ${varSnapshot} ${varSourceDir} ; \
 		echo "--> Creating archive '${varSnapshot}' from current snapshot ... done" ; \
 	fi
 
@@ -101,9 +102,9 @@ backup_usb2:
 	if [ -d "$$varTarget" ] ; then \
 		echo "--> Found 'Maxtor2TB' - starting backup of ${varSourceDir} ..." ; \
 		cd "$$varTarget" ; \
-		${cmdRsync} ${varSourceDir} . ; \
+		${cmd_rsync} ${varSourceDir} . ; \
 		echo "--> Creating archive '${varSnapshot}' from current snapshot ..." ; \
-		time tar --exclude=Videos --exclude=Music --exclude=*.vdi -cjf ${varSnapshot} ${varSourceDir} ; \
+		time ${cmd_tar} ${varSnapshot} ${varSourceDir} ; \
 		echo "--> Creating archive '${varSnapshot}' from current snapshot ... done" ; \
 	fi
 
