@@ -10,7 +10,10 @@ cdash_basedir=/var/www/CDash
 
 echo "-- Update the base system before any new installs ..."
 
-apt-get update --fix-missing
+apt-get update --fix-missing && \
+apt-get dist-upgrade -y
+
+echo "-- Update the base system before any new installs ... done"
 
 # -----------------------------------------------------------------------------
 
@@ -18,8 +21,9 @@ echo "-- Installing additional packages ..."
 
 apt-get install -y nedit cmake git gcc g++ net-tools  && \
 apt-get install -y apache2 mysql-server  && \
-apt-get install -y php php-mysql php-xsl php-curl php-gd php-dev php-xmlrpc php-bcmath php-mbstring php-xdebug  && \
-rcmysql start
+apt-get install -y php php-mysql php-xsl php-curl php-gd php-dev php-xmlrpc php-bcmath php-mbstring php-xdebug
+
+echo "-- Installing additional packages ... done"
 
 # -----------------------------------------------------------------------------
 
@@ -29,11 +33,7 @@ cd /var/www
 git clone https://github.com/Kitware/CDash.git CDash
 cd ${cdash_basedir}
 git checkout prebuilt
-
-cd ${cdash_basedir}
-mkdir build
-cd build
-cmake ..
+mkdir build && cd build && cmake ..
 
 cd ${cdash_basedir}/config
 cp config.php config.local.php
@@ -41,7 +41,7 @@ nano config.local.php
 
 cd ${cdash_basedir}
 ln -s ${cdash_basedir}/public /var/www/html/CDash
-chmod a+rw log backup public/upload public/rss
+chmod a+rwx backup log public/rss public/upload
 
 # -----------------------------------------------------------------------------
 #
