@@ -71,7 +71,7 @@ echo "-- Configuration of CDash module for Apache ..."
 mkdir -p /etc/apache2/conf.d
 
 cat << 'EOF' >> /etc/apache2/conf.d/cdash.conf
-<Directory /srv/www/htdocs/CDash>
+<Directory /var/www/CDash>
    Order allow,deny
    Allow from all
 </Directory>
