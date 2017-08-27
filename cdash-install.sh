@@ -8,6 +8,12 @@ cdash_basedir=/var/www/CDash
 
 # -----------------------------------------------------------------------------
 
+echo "-- Update the base system before any new installs ..."
+
+apt-get update --fix-missing
+
+# -----------------------------------------------------------------------------
+
 echo "-- Installing development tools ..."
 
 apt-get install -y nedit cmake git gcc g++ net-tools
@@ -23,12 +29,6 @@ apt-get install -y php php-mysql php-xsl php-curl php-gd php-dev php-xmlrpc php-
 echo "-- Restart MySQL database ..."
 
 rcmysql start
-
-# -----------------------------------------------------------------------------
-
-echo "-- Update the base system before any new installs ..."
-
-apt-get update --fix-missing
 
 # -----------------------------------------------------------------------------
 
