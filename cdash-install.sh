@@ -41,6 +41,7 @@ nano config.local.php
 
 cd ${cdash_basedir}
 ln -s ${cdash_basedir}/public /var/www/html/CDash
+chown www-data backup log public/rss public/upload
 chmod a+rwx backup log public/rss public/upload
 
 # -----------------------------------------------------------------------------
@@ -66,17 +67,10 @@ mysql -u root -p
 # -----------------------------------------------------------------------------
 #  Configuration of apache
 
-echo "-- Configuration of CDash module for Apache ..."
-
-mkdir -p /etc/apache2/conf.d
-
-cat << 'EOF' >> /etc/apache2/conf.d/cdash.conf
-<Directory /var/www/CDash>
-   Order allow,deny
-   Allow from all
-</Directory>
-EOF
-
 echo "-- Restarting Apache server ..."
 
 service apache2 restart
+
+echo ""
+echo " Complete install - go to http://localhost/CDash/install.php "
+echo ""
