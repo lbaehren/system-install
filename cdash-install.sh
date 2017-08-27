@@ -20,7 +20,7 @@ echo "-- Update the base system before any new installs ... done"
 echo "-- Installing additional packages ..."
 
 apt-get install -y nedit cmake git gcc g++ net-tools  && \
-apt-get install -y apache2 mysql-server  && \
+apt-get install -y apache2 libapache2-mod-php mysql-server  && \
 apt-get install -y php php-mysql php-xsl php-curl php-gd php-dev php-xmlrpc php-bcmath php-mbstring php-xdebug
 
 echo "-- Installing additional packages ... done"
