@@ -14,20 +14,11 @@ apt-get update --fix-missing
 
 # -----------------------------------------------------------------------------
 
-echo "-- Installing development tools ..."
+echo "-- Installing additional packages ..."
 
-apt-get install -y nedit cmake git gcc g++ net-tools
-
-echo "-- Install server components ..."
-
-apt-get install -y apache2 mysql-server
-
-echo "-- Install PHP and extensions ..."
-
-apt-get install -y php php-mysql php-xsl php-curl php-gd php-dev php-xmlrpc php-bcmath php-mbstring php-xdebug
-
-echo "-- Restart MySQL database ..."
-
+apt-get install -y nedit cmake git gcc g++ net-tools  && \
+apt-get install -y apache2 mysql-server  && \
+apt-get install -y php php-mysql php-xsl php-curl php-gd php-dev php-xmlrpc php-bcmath php-mbstring php-xdebug  && \
 rcmysql start
 
 # -----------------------------------------------------------------------------
