@@ -27,7 +27,7 @@ echo "-- Installing additional packages ... done"
 
 # -----------------------------------------------------------------------------
 
-echo "-- Pull CDash sources from Git repository ..."
+echo "-- Install CDash ..."
 
 cd /var/www
 git clone https://github.com/Kitware/CDash.git CDash
@@ -44,6 +44,8 @@ ln -s ${cdash_basedir}/public /var/www/html/CDash
 chown www-data backup log public/rss public/upload
 chmod a+rwx backup log public/rss public/upload
 
+echo "-- Install CDash ... done"
+
 # -----------------------------------------------------------------------------
 #
 # Note: Typically the database entry needs to be done by hand; however using
@@ -53,9 +55,11 @@ chmod a+rwx backup log public/rss public/upload
 
 echo "-- Create MySQL database for CDash ..."
 echo ""
-echo "mysql> create database cdash;"
-echo "mysql> create user 'cdash'@'localhost' identified by '<password>';"
-echo "mysql> grant all privileges on cdash.* to 'cdash'@'localhost' with grant option;"
+echo "-------------------------------------------------"
+echo " create database cdash;"
+echo " create user 'cdash'@'localhost' identified by '<password>';"
+echo " grant all privileges on cdash.* to 'cdash'@'localhost' with grant option;"
+echo "-------------------------------------------------"
 echo ""
 
 mysql -u root -p
@@ -72,5 +76,7 @@ echo "-- Restarting Apache server ..."
 service apache2 restart
 
 echo ""
-echo " Complete install - go to http://localhost/CDash/install.php "
+echo "-------------------------------------------------"
+echo " To complete install: go to http://localhost/CDash/install.php "
+echo "-------------------------------------------------"
 echo ""
