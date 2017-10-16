@@ -34,7 +34,7 @@ echo "--> Cloning repository into local working copy ..."
 git clone https://github.com/Kitware/CDash.git CDash
 cd ${cdash_basedir}
 echo "--> Checking out Git branch ..."
-git checkout prebuilt
+git checkout v2.4.0-prebuilt
 echo "--> Running CMake to configure project"
 mkdir build && cd build && cmake ..
 
