@@ -30,17 +30,23 @@ echo "-- Installing additional packages ... done"
 echo "-- Install CDash ..."
 
 cd /var/www
+echo "--> Cloning repository into local working copy ..."
 git clone https://github.com/Kitware/CDash.git CDash
 cd ${cdash_basedir}
+echo "--> Checking out Git branch ..."
 git checkout prebuilt
+echo "--> Running CMake to configure project"
 mkdir build && cd build && cmake ..
 
+echo "--> Creating copy of configuration file for editing ..."
 cd ${cdash_basedir}/config
 cp config.php config.local.php
 nano config.local.php
 
 cd ${cdash_basedir}
+echo "--> Creating symbolic link to web application root directory ..."
 ln -s ${cdash_basedir}/public /var/www/html/CDash
+echo "--> Changing permissions to application folder ..."
 chown www-data backup log public/rss public/upload
 chmod a+rwx backup log public/rss public/upload
 
