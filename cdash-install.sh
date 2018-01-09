@@ -7,6 +7,13 @@
 cdash_basedir=/var/www/CDash
 mysql_pass=""
 
+case ${mysql_pass} in
+    "")
+        echo "[ERROR] MySQL password not set!"
+        exit 1;
+        ;;
+esac
+
 #_________________________________________________________________________________________
 #  Determine OS name and version
 
@@ -66,7 +73,7 @@ case ${varOS} in
         apt-get install -y apache2 libapache2-mod-php  && \
         apt-get install -y php-dev php-xmlrpc php-bcmath php-mbstring php-xdebug
         case ${varRelease} in
-            "12.04")
+            "12.04"|"14.04")
                 # mysql-client-5.5
                 apt-get install -y php5 php5-xsl php5-curl php5-gd php5-mysql mysql-server-5.5
                 ;;
@@ -112,6 +119,7 @@ echo "-- Install CDash ... done"
 # Note: Typically the database entry needs to be done by hand; however using
 #       the '-e <command>' command line option this should be scriptable as
 #       well.
+#       [https://dev.mysql.com/doc/refman/5.7/en/command-line-options.html]
 #
 #       mysql -u root -p --execute="create database cdash;"
 #       mysql -u root -p --execute="create user 'cdash'@'localhost' identified by '${mysql_pass}';"
@@ -119,17 +127,14 @@ echo "-- Install CDash ... done"
 #
 
 echo "-- Create MySQL database for CDash ..."
-echo ""
-echo "--> using the following commands:"
-echo "-------------------------------------------------"
-echo "  create database cdash;"
-echo "  create user 'cdash'@'localhost' identified by '<password>';"
-echo "  grant all privileges on cdash.* to 'cdash'@'localhost' with grant option;"
-echo "-------------------------------------------------"
-echo ""
 
+echo "--> running SQL command: > create database cdash;"
 mysql -u root -p --execute="create database cdash;"
+
+echo "--> running SQL command: > create user 'cdash'@'localhost' identified by '<password>';"
 mysql -u root -p --execute="create user 'cdash'@'localhost' identified by '${mysql_pass}';"
+
+echo "--> running SQL command: > grant all privileges on cdash.* to 'cdash'@'localhost' with grant option;"
 mysql -u root -p --execute="grant all privileges on cdash.* to 'cdash'@'localhost' with grant option;"
 
 # -----------------------------------------------------------------------------
