@@ -8,7 +8,7 @@
 
 # TODO: set password for MySQL database
 mysql_pass=""
-CDASH_VERSION=v2.4.0
+CDASH_VERSION=master
 
 # Installation location of CDash (as part of the webserver directory)
 INSTALL_PREFIX=/var/www
@@ -112,7 +112,10 @@ install_cdash ()
     echo "--> Check out version to use for install ..."
     cd ${CDASH_PREFIX}
     git checkout ${CDASH_VERSION}
-    git checkout -b ${CDASH_VERSION}
+
+    if [ "${CDASH_VERSION}" != "master" ]; then
+        git checkout -b ${CDASH_VERSION}
+    fi
 
     echo "--> Install PHP modules ..."
     cd ${CDASH_PREFIX}
