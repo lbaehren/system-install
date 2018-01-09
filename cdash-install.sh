@@ -8,12 +8,13 @@
 
 # TODO: set password for MySQL database
 mysql_pass=""
+CDASH_VERSION=v2.4.0
 
 # Installation location of CDash (as part of the webserver directory)
 INSTALL_PREFIX=/var/www
 CDASH_PREFIX=${INSTALL_PREFIX}/CDash
-varOS=""
-varRelease=""
+OS_NAME=""
+OS_VERSION=""
 
 case ${mysql_pass} in
     "")
@@ -36,24 +37,24 @@ check_system ()
     if test -f /etc/os-release ; then
         varName=`cat /etc/os-release | grep NAME | grep -v PRETTY | grep -v CODENAME | grep -v CPE_NAME`
         if test `echo ${varName} | grep Ubuntu` ; then
-            varOS="ubuntu"
+            OS_NAME="ubuntu"
         elif test `echo ${varName} | grep Fedora` ; then
-            varOS="fedora"
+            OS_NAME="fedora"
         fi
     elif test -f /etc/debian_version ; then
-        varOS="ubuntu"
+        OS_NAME="ubuntu"
     elif test -f /etc/fedora-release ; then
-      varOS="fedora"
+      OS_NAME="fedora"
     elif test -f /etc/SuSE-release ; then
-        varOS="opensuse"
+        OS_NAME="opensuse"
     fi
 
-    case ${varOS} in
+    case ${OS_NAME} in
         "fedora")
-            varRelease=`cat /etc/os-release | grep VERSION_ID | tr '=' '\n' | grep [0-9]`
+            OS_VERSION=`cat /etc/os-release | grep VERSION_ID | tr '=' '\n' | grep [0-9]`
             ;;
         "ubuntu")
-            varRelease=`cat /etc/os-release | grep VERSION_ID | tr '""' '\n' | grep [0-9]`
+            OS_VERSION=`cat /etc/os-release | grep VERSION_ID | tr '""' '\n' | grep [0-9]`
             ;;
     esac
 }
@@ -65,7 +66,7 @@ install_system_packages ()
 {
     echo "-- Installing of system packages ..."
 
-    case ${varOS} in
+    case ${OS_NAME} in
         "fedora")
             echo "--> Update base system ..."
             dnf -y update
@@ -80,7 +81,7 @@ install_system_packages ()
             apt-get install -y apache2 libapache2-mod-php
             echo "--> Installing PHP modules ..."
             apt-get install -y php-dev php-xmlrpc php-bcmath php-mbstring php-xdebug
-            case ${varRelease} in
+            case ${OS_VERSION} in
                 "12.04"|"14.04")
                     # mysql-client-5.5
                     apt-get install -y php5 php5-xsl php5-curl php5-gd php5-mysql mysql-server-5.5
@@ -110,8 +111,8 @@ install_cdash ()
 
     echo "--> Check out version to use for install ..."
     cd ${CDASH_PREFIX}
-    git checkout v2.4.0
-    git checkout -b v2.4.0
+    git checkout ${CDASH_VERSION}
+    git checkout -b ${CDASH_VERSION}
 
     echo "--> Install PHP modules ..."
     cd ${CDASH_PREFIX}
