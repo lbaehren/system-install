@@ -96,7 +96,7 @@ echo "--> Cloning repository into local working copy ..."
 git clone https://github.com/Kitware/CDash.git CDash
 cd ${cdash_basedir}
 echo "--> Checking out Git branch ..."
-git checkout v2.4.0-prebuilt
+git checkout v2.4.0
 echo "--> Running CMake to configure project"
 mkdir build && cd build && cmake ..
 
@@ -137,12 +137,14 @@ mysql -u root -p --execute="create user 'cdash'@'localhost' identified by '${mys
 echo "--> running SQL command: > grant all privileges on cdash.* to 'cdash'@'localhost' with grant option;"
 mysql -u root -p --execute="grant all privileges on cdash.* to 'cdash'@'localhost' with grant option;"
 
+echo "-- Create MySQL database for CDash ... done"
+
 # -----------------------------------------------------------------------------
 #  Configuration of apache
 
 echo "-- Restarting Apache server ..."
-
 service apache2 restart
+echo "-- Restarting Apache server ... done"
 
 echo ""
 echo "-------------------------------------------------"
