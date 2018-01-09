@@ -108,17 +108,23 @@ install_cdash ()
     echo "--> Cloning repository into local working copy ..."
     git clone https://github.com/Kitware/CDash.git CDash
 
-    echo "--> Set up Git branch and required components"
+    echo "--> Check out version to use for install ..."
     cd ${CDASH_PREFIX}
-    git checkout master
+    git checkout v2.4.0
+    git checkout -b v2.4.0
+
+    echo "--> Install PHP modules ..."
+    cd ${CDASH_PREFIX}
     curl -sS https://getcomposer.org/installer | php
     php composer.phar install
+
+    echo "--> Install Node modules ..."
+    cd ${CDASH_PREFIX}
     npm install
     node_modules/.bin/gulp
 
     echo "--> Running CMake to configure project"
     cd ${CDASH_PREFIX}
-    curl -sS https://getcomposer.org/installer | php
     mkdir build && \
     cd build && \
     cmake ..
