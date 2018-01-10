@@ -5,6 +5,7 @@
 #  [1] https://cmake.org/Wiki/CDash:Administration
 #  [2] https://cmake.org/Wiki/CDash:Upgrade
 #  [3] https://nodejs.org/en/download/package-manager/#debian-and-ubuntu-based-linux-distributions
+#  [4] https://wiki.debian.org/MySql
 
 # ========================================================================================
 #
@@ -13,7 +14,7 @@
 # ========================================================================================
 
 # TODO: set password for MySQL database
-mysql_pass="lialaiwmmb"
+mysql_pass=""
 CDASH_VERSION=master
 
 # Installation location of CDash (as part of the webserver directory)
