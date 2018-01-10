@@ -135,8 +135,8 @@ install_system_packages ()
 
     case ${OS_NAME} in
         "debian")
-            echo "--> Update base system ..."
-            apt-get update --fix-missing && \
+            echo "--> Updating Debian base system ..."
+            apt-get update --fix-missing
             apt-get dist-upgrade -y
             apt-get install -y apt-utils
             echo "--> Installing development tools ..."
@@ -152,12 +152,13 @@ install_system_packages ()
             apt-get install -y php-xmlrpc php-bcmath php-mbstring php-xdebug php-xsl php-curl php-gd php-mysql
             ;;
         "fedora")
-            echo "--> Update base system ..."
+            echo "--> Updating Fedora base system ..."
             dnf -y update
             ;;
         "ubuntu")
-            echo "--> Update base system ..."
-            apt-get update --fix-missing && \
+            echo "--> Updating Ubuntu base system ..."
+            dpkg configure -a
+            apt-get update --fix-missing
             apt-get dist-upgrade -y
             apt-get install -y apt-utils
             echo "--> Installing development tools ..."
