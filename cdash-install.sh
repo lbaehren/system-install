@@ -108,7 +108,7 @@ install_system_packages ()
             echo "--> Installing Webserver(-modules) ..."
             apt-get install -y apache2 libapache2-mod-php
             echo "--> Installing MySQL database server ..."
-            apt-get install -y l mysql-server
+            apt-get install -y mysql-server
             echo "--> Installing Node.js ..."
             curl -sL https://deb.nodesource.com/setup_9.x | bash -
             apt-get install -y nodejs
