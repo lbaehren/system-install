@@ -253,12 +253,7 @@ configure_mysql ()
 {
     echo "-- Create MySQL database for CDash ..."
 
-    echo "create database cdash;" > cdash.sql
-    echo "create user 'cdash'@'localhost' identified by '${mysql_pass}';" >> cdash.sql
-    echo "grant all privileges on cdash.* to 'cdash'@'localhost' with grant option;" >> cdash.sql
-    echo "exit;" >> cdash.sql
-
-    mysql -u root -p${mysql_pass} < cdash.sql
+    mysql -u root -p${mysql_pass} --execute="create database cdash; create user 'cdash'@'localhost' identified by '${mysql_pass}'; grant all privileges on cdash.* to 'cdash'@'localhost' with grant option; QUIT;"
 
     # echo "--> running SQL command: > create database cdash;"
     # mysql -u root -p --execute="create database cdash;"
