@@ -96,21 +96,24 @@ check_system ()
 
 install_mysql ()
 {
-    # install system package
+    echo "--> Installing MySQl server system package ..."
+
     apt-get install -y mysql-server
 
-    # Stop MySQL
+    echo "--> Stopping MqSQL service ..."
+
     service mysql stop
 
-    # create 'init' file to be used as input
+    echo "--> create 'init' file to be used as input ..."
+
     echo "UPDATE mysql.user SET Password=PASSWORD('${mysql_pass}') WHERE User='root';" > mysql-init
     echo "FLUSH PRIVILEGES;" >> mysql-init
-    mysqld_safe --init-file=mysql-init &
+    mysqld_safe --init-file=mysql-init --nowatch
 
     # clean up
     rm mysql-init
 
-    # start service
+    echo "--> Restarting MySQL service ..."
     service mysql start
 }
 
@@ -249,14 +252,21 @@ configure_mysql ()
 {
     echo "-- Create MySQL database for CDash ..."
 
-    echo "--> running SQL command: > create database cdash;"
-    mysql -u root -p --execute="create database cdash;"
+    echo "create database cdash;" > cdash.sql
+    echo "create user 'cdash'@'localhost' identified by '${mysql_pass}';" >> cdash.sql
+    echo "grant all privileges on cdash.* to 'cdash'@'localhost' with grant option;" >> cdash.sql
+    echo "exit;" >> cdash.sql
 
-    echo "--> running SQL command: > create user 'cdash'@'localhost' identified by '<password>';"
-    mysql -u root -p --execute="create user 'cdash'@'localhost' identified by '${mysql_pass}';"
+    mysql -u root -p${mysql_pass} < cdash.sql
 
-    echo "--> running SQL command: > grant all privileges on cdash.* to 'cdash'@'localhost' with grant option;"
-    mysql -u root -p --execute="grant all privileges on cdash.* to 'cdash'@'localhost' with grant option;"
+    # echo "--> running SQL command: > create database cdash;"
+    # mysql -u root -p --execute="create database cdash;"
+    #
+    # echo "--> running SQL command: > create user 'cdash'@'localhost' identified by '<password>';"
+    # mysql -u root -p --execute="create user 'cdash'@'localhost' identified by '${mysql_pass}';"
+    #
+    # echo "--> running SQL command: > grant all privileges on cdash.* to 'cdash'@'localhost' with grant option;"
+    # mysql -u root -p --execute="grant all privileges on cdash.* to 'cdash'@'localhost' with grant option;"
 
     echo "-- Create MySQL database for CDash ... done"
 }
