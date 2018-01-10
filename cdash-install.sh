@@ -4,6 +4,7 @@
 #
 #  [1] https://cmake.org/Wiki/CDash:Administration
 #  [2] https://cmake.org/Wiki/CDash:Upgrade
+#  [3] https://nodejs.org/en/download/package-manager/#debian-and-ubuntu-based-linux-distributions
 
 # ========================================================================================
 #
@@ -12,7 +13,7 @@
 # ========================================================================================
 
 # TODO: set password for MySQL database
-mysql_pass=""
+mysql_pass="lialaiwmmb"
 CDASH_VERSION=master
 
 # Installation location of CDash (as part of the webserver directory)
@@ -90,6 +91,38 @@ check_system ()
 }
 
 #_________________________________________________________________________________________
+#  Installation of MySQL server
+
+install_mysql ()
+{
+    # install system package
+    apt-get install -y mysql-server
+
+    # Stop MySQL
+    service mysql stop
+
+    # create 'init' file to be used as input
+    echo "UPDATE mysql.user SET Password=PASSWORD('${mysql_pass}') WHERE User='root';" > mysql-init
+    echo "FLUSH PRIVILEGES;" >> mysql-init
+    mysqld_safe --init-file=mysql-init &
+
+    # clean up
+    rm mysql-init
+
+    # start service
+    service mysql start
+}
+
+#_________________________________________________________________________________________
+#  Installation of Node.js
+
+install_nodejs ()
+{
+    curl -sL https://deb.nodesource.com/setup_9.x | bash -
+    apt-get install -y nodejs
+}
+
+#_________________________________________________________________________________________
 #   Installation of system packages
 
 install_system_packages ()
@@ -98,7 +131,6 @@ install_system_packages ()
 
     case ${OS_NAME} in
         "debian")
-            export DEBIAN_FRONTEND=noninteractive
             echo "--> Update base system ..."
             apt-get update --fix-missing && \
             apt-get dist-upgrade -y
@@ -108,15 +140,12 @@ install_system_packages ()
             echo "--> Installing Webserver(-modules) ..."
             apt-get install -y apache2 libapache2-mod-php
             echo "--> Installing MySQL database server ..."
-            apt-get install -y mysql-server
+            install_mysql
             echo "--> Installing Node.js ..."
-            curl -sL https://deb.nodesource.com/setup_9.x | bash -
-            apt-get install -y nodejs
+            install_nodejs
             echo "--> Installing PHP modules ..."
             apt-get install -y php php-dev
             apt-get install -y php-xmlrpc php-bcmath php-mbstring php-xdebug php-xsl php-curl php-gd php-mysql
-            # re-instate frontend behaviour
-            export DEBIAN_FRONTEND=interactive
             ;;
         "fedora")
             echo "--> Update base system ..."
@@ -128,9 +157,11 @@ install_system_packages ()
             apt-get dist-upgrade -y
             apt-get install -y apt-utils
             echo "--> Installing development tools ..."
-            apt-get install -y cmake curl git gcc g++ nano net-tools npm
+            apt-get install -y cmake curl git gcc g++ nano net-tools
             echo "--> Installing Webserver(-modules) ..."
             apt-get install -y apache2 libapache2-mod-php
+            echo "--> Installing Node.js ..."
+            install_nodejs
             echo "--> Installing PHP modules ..."
             apt-get install -y php-dev php-xmlrpc php-bcmath php-mbstring php-xdebug
             case ${OS_VERSION} in
