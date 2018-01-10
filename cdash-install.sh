@@ -1,5 +1,10 @@
 #!/bin/bash
 
+#  References
+#
+#  [1] https://cmake.org/Wiki/CDash:Administration
+#  [2] https://cmake.org/Wiki/CDash:Upgrade
+
 # ========================================================================================
 #
 #  Variables
@@ -35,28 +40,53 @@ esac
 check_system ()
 {
     if test -f /etc/os-release ; then
-        varName=`cat /etc/os-release | grep NAME | grep -v PRETTY | grep -v CODENAME | grep -v CPE_NAME`
-        if test `echo ${varName} | grep Ubuntu` ; then
+        varName=`cat /etc/os-release | grep NAME | grep -v PRETTY | sed s/\"//g`
+        # check for Ubuntu
+        if [[ ${varName} =~ .*Ubuntu.* ]]
+        then
             OS_NAME="ubuntu"
-        elif test `echo ${varName} | grep Fedora` ; then
+        fi
+        # check for Debian
+        if [[ ${varName} =~ .*Debian.* ]]
+        then
+            OS_NAME="debian"
+        fi
+        # check for Fedora
+        if [[ ${varName} =~ .*Fedora.* ]]
+        then
             OS_NAME="fedora"
         fi
-    elif test -f /etc/debian_version ; then
-        OS_NAME="ubuntu"
-    elif test -f /etc/fedora-release ; then
-      OS_NAME="fedora"
-    elif test -f /etc/SuSE-release ; then
-        OS_NAME="opensuse"
     fi
 
-    case ${OS_NAME} in
-        "fedora")
-            OS_VERSION=`cat /etc/os-release | grep VERSION_ID | tr '=' '\n' | grep [0-9]`
-            ;;
-        "ubuntu")
-            OS_VERSION=`cat /etc/os-release | grep VERSION_ID | tr '""' '\n' | grep [0-9]`
-            ;;
-    esac
+    if [[ ${OS_NAME} == "" ]] ; then
+        # check for Debian
+        if test -f /etc/debian_version ; then
+            OS_NAME="debian"
+            OS_VERSION=`cat /etc/debian_version`
+        fi
+        # check for Fedora
+        if test -f /etc/fedora-release ; then
+          OS_NAME="fedora"
+        fi
+        # check for OpenSuSE
+        if test -f /etc/SuSE-release ; then
+            OS_NAME="opensuse"
+        fi
+    fi
+
+    if [[ ${OS_VERSION} == "" ]] ; then
+        case ${OS_NAME} in
+            "debian")
+                OS_VERSION=`cat /etc/os-release | grep VERSION_ID | tr '=' '\n' | sed s/\"//g | grep [0-9]`
+                ;;
+            "fedora")
+                OS_VERSION=`cat /etc/os-release | grep VERSION_ID | tr '=' '\n' | grep [0-9]`
+                ;;
+            "ubuntu")
+                OS_VERSION=`cat /etc/os-release | grep VERSION_ID | tr '""' '\n' | grep [0-9]`
+                ;;
+        esac
+    fi
 }
 
 #_________________________________________________________________________________________
@@ -67,6 +97,27 @@ install_system_packages ()
     echo "-- Installing of system packages ..."
 
     case ${OS_NAME} in
+        "debian")
+            export DEBIAN_FRONTEND=noninteractive
+            echo "--> Update base system ..."
+            apt-get update --fix-missing && \
+            apt-get dist-upgrade -y
+            apt-get install -y apt-utils
+            echo "--> Installing development tools ..."
+            apt-get install -y cmake curl git gcc g++ nano net-tools
+            echo "--> Installing Webserver(-modules) ..."
+            apt-get install -y apache2 libapache2-mod-php
+            echo "--> Installing MySQL database server ..."
+            apt-get install -y l mysql-server
+            echo "--> Installing Node.js ..."
+            curl -sL https://deb.nodesource.com/setup_9.x | bash -
+            apt-get install -y nodejs
+            echo "--> Installing PHP modules ..."
+            apt-get install -y php php-dev
+            apt-get install -y php-xmlrpc php-bcmath php-mbstring php-xdebug php-xsl php-curl php-gd php-mysql
+            # re-instate frontend behaviour
+            export DEBIAN_FRONTEND=interactive
+            ;;
         "fedora")
             echo "--> Update base system ..."
             dnf -y update
@@ -75,6 +126,7 @@ install_system_packages ()
             echo "--> Update base system ..."
             apt-get update --fix-missing && \
             apt-get dist-upgrade -y
+            apt-get install -y apt-utils
             echo "--> Installing development tools ..."
             apt-get install -y cmake curl git gcc g++ nano net-tools npm
             echo "--> Installing Webserver(-modules) ..."
@@ -120,7 +172,7 @@ install_cdash ()
     echo "--> Install PHP modules ..."
     cd ${CDASH_PREFIX}
     curl -sS https://getcomposer.org/installer | php
-    php composer.phar install
+    php composer.phar install --no-dev --optimize-autoloader
 
     echo "--> Install Node modules ..."
     cd ${CDASH_PREFIX}
