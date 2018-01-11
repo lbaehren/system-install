@@ -157,7 +157,6 @@ install_system_packages ()
             ;;
         "ubuntu")
             echo "--> Updating Ubuntu base system ..."
-            dpkg configure -a
             apt-get update --fix-missing
             apt-get dist-upgrade -y
             apt-get install -y apt-utils
@@ -231,8 +230,9 @@ install_cdash ()
     echo "--> Creating symbolic link to web application root directory ..."
     ln -s ${CDASH_PREFIX}/public ${INSTALL_PREFIX}/html/CDash
     echo "--> Changing permissions to application folder ..."
-    chown www-data backup log public/rss public/upload
-    chmod a+rwx backup log public/rss public/upload
+    mkdir node_modules
+    chown www-data backup log public/rss public/upload node_modules
+    chmod a+rwx backup log public/rss public/upload node_modules
 
     echo "-- Install CDash ... done"
 }
