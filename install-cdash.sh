@@ -13,12 +13,19 @@
 #
 # ========================================================================================
 
-# TODO: set password for MySQL database
 mysql_pass=""
+
+# Git branch of CDash repo to use for installation
 CDASH_VERSION=master
 
-# Installation location of CDash (as part of the webserver directory)
+# Installation prefix for CDash (INSTALL_PREFIX/CDash)
 INSTALL_PREFIX=/var/www
+
+#
+# --- do not edit below this point! ------------------------------------------------------
+#
+
+# Installation location of CDash (as part of the webserver directory)
 CDASH_PREFIX=${INSTALL_PREFIX}/CDash
 OS_NAME=""
 OS_VERSION=""
@@ -38,6 +45,11 @@ esac
 
 #_________________________________________________________________________________________
 #  Determine OS name and version
+#
+#  In order to support installation of multiple platforms we need to perform a system
+#  introspection first in order to determine operating system name and version. The
+#  variables 'OS_NAME'  and 'OS_VERSION' then can be use later on for branching into
+#  platform-specific installation/configuration instructions.
 
 check_system ()
 {
@@ -127,13 +139,19 @@ install_nodejs ()
 }
 
 #_________________________________________________________________________________________
-#   Installation of system packages
+#  Installation of system packages
+#
+#  Basic components of the actual LAMP steck can be installed through the system's
+#  package manager (apt, yum, dnf). Major distinction is between RPM- and DEB-based
+#  systems. If necessary we distinguish between release versions of a given OS since
+#  package names might change.
 
 install_system_packages ()
 {
     echo "-- Installing of system packages ..."
 
     case ${OS_NAME} in
+        # --- Debian/GNU Linux ----------------------------
         "debian")
             echo "--> Updating Debian base system ..."
             apt-get update --fix-missing
@@ -151,10 +169,12 @@ install_system_packages ()
             apt-get install -y php php-dev
             apt-get install -y php-xmlrpc php-bcmath php-mbstring php-xdebug php-xsl php-curl php-gd php-mysql
             ;;
+        # --- Fedora --------------------------------------
         "fedora")
             echo "--> Updating Fedora base system ..."
             dnf -y update
             ;;
+        # --- Ubuntu --------------------------------------
         "ubuntu")
             echo "--> Updating Ubuntu base system ..."
             apt-get update --fix-missing
@@ -170,7 +190,6 @@ install_system_packages ()
             apt-get install -y php-dev php-xmlrpc php-bcmath php-mbstring php-xdebug
             case ${OS_VERSION} in
                 "12.04"|"14.04")
-                    # mysql-client-5.5
                     apt-get install -y php5 php5-xsl php5-curl php5-gd php5-mysql mysql-server-5.5
                     ;;
                 *)
@@ -178,6 +197,7 @@ install_system_packages ()
                     ;;
             esac
             ;;
+        # -------------------------------------------------
     esac
 
     echo "-- Installing additional packages ... done"
@@ -239,30 +259,19 @@ install_cdash ()
 
 #_________________________________________________________________________________________
 #  Configure MySQL database for CDash
-#
-#  Note: Typically the database entry needs to be done by hand; however using
-#        the '-e <command>' command line option this should be scriptable as
-#        well.
-#        [https://dev.mysql.com/doc/refman/5.7/en/command-line-options.html]
-#
-#        mysql -u root -p --execute="create database cdash;"
-#        mysql -u root -p --execute="create user 'cdash'@'localhost' identified by '${mysql_pass}';"
-#        mysql -u root -p --execute="grant all privileges on cdash.* to 'cdash'@'localhost' with grant option;"
 
 configure_mysql ()
 {
     echo "-- Create MySQL database for CDash ..."
 
-    mysql -u root -p${mysql_pass} --execute="create database cdash; create user 'cdash'@'localhost' identified by '${mysql_pass}'; grant all privileges on cdash.* to 'cdash'@'localhost' with grant option; QUIT;"
+    # --- Generate batch file with set of commands to run on the MySQL database
+    echo "" > configure_mysql.sql
+    echo "create database cdash;" >> configure_mysql.sql
+    echo "create user 'cdash'@'localhost' identified by '${mysql_pass}';" >> configure_mysql.sql
+    echo "grant all privileges on cdash.* to 'cdash'@'localhost' with grant option;" >> configure_mysql.sql
 
-    # echo "--> running SQL command: > create database cdash;"
-    # mysql -u root -p --execute="create database cdash;"
-    #
-    # echo "--> running SQL command: > create user 'cdash'@'localhost' identified by '<password>';"
-    # mysql -u root -p --execute="create user 'cdash'@'localhost' identified by '${mysql_pass}';"
-    #
-    # echo "--> running SQL command: > grant all privileges on cdash.* to 'cdash'@'localhost' with grant option;"
-    # mysql -u root -p --execute="grant all privileges on cdash.* to 'cdash'@'localhost' with grant option;"
+    # --- Run the previously created set of instructions on the database
+    mysql -u root -p${mysql_pass} < configure_mysql.sql
 
     echo "-- Create MySQL database for CDash ... done"
 }
