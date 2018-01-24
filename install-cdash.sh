@@ -291,12 +291,11 @@ configure_mysql ()
     echo "-- Create MySQL database for CDash ..."
 
     # --- Generate batch file with set of commands to run on the MySQL database
-    mysql -u root -p${mysql_pass} <<EOF
-    create database cdash;
-    create user 'cdash'@'localhost' identified by '${mysql_pass}';
-    grant all privileges on cdash.* to 'cdash'@'localhost' with grant option;
-    exit
-    EOF
+    echo ""                                                                           > configure_mysql.sql
+    echo "create database cdash;"                                                    >> configure_mysql.sql
+    echo "create user 'cdash'@'localhost' identified by '${mysql_pass}';"            >> configure_mysql.sql
+    echo "grant all privileges on cdash.* to 'cdash'@'localhost' with grant option;" >> configure_mysql.sql
+    echo "exit"                                                                      >> configure_mysql.sql
 
     # --- Run the previously created set of instructions on the database
     mysql -u root -p${mysql_pass} < configure_mysql.sql
