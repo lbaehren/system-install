@@ -178,16 +178,31 @@ install_system_packages ()
             apt-get dist-upgrade -y
             apt-get install -y apt-utils
             echo "--> Installing development tools ..."
-            apt-get install -y cmake curl git gcc g++ nano net-tools
+            apt-get install -y cmake
+            apt-get install -y curl
+            apt-get install -y git
+            apt-get install -y gcc
+            apt-get install -y g++
+            apt-get install -y nano
+            apt-get install -y net-tools
             echo "--> Installing Webserver(-modules) ..."
-            apt-get install -y apache2 libapache2-mod-php
+            apt-get install -y apache2
+            apt-get install -y libapache2-mod-php
             echo "--> Installing MySQL database server ..."
             install_mysql
             echo "--> Installing Node.js ..."
             install_nodejs
             echo "--> Installing PHP modules ..."
-            apt-get install -y php php-dev
-            apt-get install -y php-xmlrpc php-bcmath php-mbstring php-xdebug php-xsl php-curl php-gd php-mysql
+            apt-get install -y php
+            apt-get install -y php-dev
+            apt-get install -y php-xmlrpc
+            apt-get install -y php-bcmath
+            apt-get install -y php-mbstring
+            apt-get install -y php-xdebug
+            apt-get install -y php-xsl
+            apt-get install -y php-curl
+            apt-get install -y php-gd
+            apt-get install -y php-mysql
             ;;
         # --- Fedora --------------------------------------
         "fedora")
@@ -201,9 +216,16 @@ install_system_packages ()
             apt-get dist-upgrade -y
             apt-get install -y apt-utils
             echo "--> Installing development tools ..."
-            apt-get install -y cmake curl git gcc g++ nano net-tools
+            apt-get install -y cmake
+            apt-get install -y curl
+            apt-get install -y git
+            apt-get install -y gcc
+            apt-get install -y g++
+            apt-get install -y nano
+            apt-get install -y net-tools
             echo "--> Installing Webserver(-modules) ..."
-            apt-get install -y apache2 libapache2-mod-php
+            apt-get install -y apache2
+            apt-get install -y libapache2-mod-php
             echo "--> Installing Node.js ..."
             install_nodejs
             echo "--> Installing PHP modules ..."
