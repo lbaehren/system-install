@@ -1,11 +1,20 @@
 #!/bin/bash
 
-#  References
+#  DESCRIPTION
+#
+#    This script is intended to handle the installation of a CDash test server on a
+#    Fedora/Debian/Ubuntu based platform. Package dependencies - CDash is operating
+#    on top of a commonly used LAMP stack - are resolved primarily via the system's
+#    package manager (apt/dnf/yum), while CDash itself is taken from the project's
+#    code repository as hosted on Github [5].
+#
+#  REFERENCES
 #
 #  [1] https://cmake.org/Wiki/CDash:Administration
 #  [2] https://cmake.org/Wiki/CDash:Upgrade
 #  [3] https://nodejs.org/en/download/package-manager/#debian-and-ubuntu-based-linux-distributions
 #  [4] https://wiki.debian.org/MySql
+#  [5] https://github.com/Kitware/CDash.git
 
 # ========================================================================================
 #
