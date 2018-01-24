@@ -131,11 +131,22 @@ install_mysql ()
 
 #_________________________________________________________________________________________
 #  Installation of Node.js
+#
+#  In order to be consistent across our target platforms we directly retrieve Node.js
+#  from the project itself.
 
 install_nodejs ()
 {
-    curl -sL https://deb.nodesource.com/setup_9.x | bash -
-    apt-get install -y nodejs
+    case ${OS_NAME} in
+        "debian"|"ubuntu")
+            curl -sL https://deb.nodesource.com/setup_9.x | bash -
+            apt-get install -y nodejs
+            ;;
+        "fedora")
+            curl --silent --location https://rpm.nodesource.com/setup_9.x | bash -
+            dnf -y install nodejs
+            ;;
+    esac
 }
 
 #_________________________________________________________________________________________
@@ -205,6 +216,9 @@ install_system_packages ()
 
 #_________________________________________________________________________________________
 #  Installation of CDash server
+#
+#  This function performs the installation of the actual CDash server from the source code
+#  hosted on Github.
 
 install_cdash ()
 {
@@ -224,15 +238,26 @@ install_cdash ()
         git checkout -b ${CDASH_VERSION}
     fi
 
+    cd ${CDASH_PREFIX}
+    echo "--> Creating symbolic link to web application root directory ..."
+    ln -s ${CDASH_PREFIX}/public ${INSTALL_PREFIX}/html/CDash
+    echo "--> Changing permissions to application folder ..."
+    mkdir -p node_modules
+    chown www-data backup log public/rss public/upload node_modules
+    chmod a+rwx backup log public/rss public/upload node_modules
+    echo "--> Creating symbolic link to web application root directory ... done"
+
     echo "--> Install PHP modules ..."
     cd ${CDASH_PREFIX}
     curl -sS https://getcomposer.org/installer | php
     php composer.phar install --no-dev --optimize-autoloader
+    echo "--> Install PHP modules ... done"
 
     echo "--> Install Node modules ..."
     cd ${CDASH_PREFIX}
     npm install
     node_modules/.bin/gulp
+    echo "--> Install Node modules ... done"
 
     echo "--> Running CMake to configure project"
     cd ${CDASH_PREFIX}
@@ -245,14 +270,6 @@ install_cdash ()
     cp config.php config.local.php
     echo "--> Opening file 'config.local.php' for editing ..."
     nano config.local.php
-
-    cd ${CDASH_PREFIX}
-    echo "--> Creating symbolic link to web application root directory ..."
-    ln -s ${CDASH_PREFIX}/public ${INSTALL_PREFIX}/html/CDash
-    echo "--> Changing permissions to application folder ..."
-    mkdir node_modules
-    chown www-data backup log public/rss public/upload node_modules
-    chmod a+rwx backup log public/rss public/upload node_modules
 
     echo "-- Install CDash ... done"
 }
@@ -269,9 +286,16 @@ configure_mysql ()
     echo "create database cdash;" >> configure_mysql.sql
     echo "create user 'cdash'@'localhost' identified by '${mysql_pass}';" >> configure_mysql.sql
     echo "grant all privileges on cdash.* to 'cdash'@'localhost' with grant option;" >> configure_mysql.sql
+    echo "exit" >> configure_mysql.sql
 
     # --- Run the previously created set of instructions on the database
     mysql -u root -p${mysql_pass} < configure_mysql.sql
+
+    mysql -u root -p${mysql_pass} <<EOF
+    create database cdash;
+    create user 'cdash'@'localhost' identified by '${mysql_pass}';
+    grant all privileges on cdash.* to 'cdash'@'localhost' with grant option;
+    EOF
 
     echo "-- Create MySQL database for CDash ... done"
 }
