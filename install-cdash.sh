@@ -114,6 +114,10 @@ check_system ()
 
 #_________________________________________________________________________________________
 #  Installation of MySQL server
+#
+#  When installing the MySQL server on Debian, we need a few extra steps which are handled
+#  "a bit more gracefully" on e.g. Ubuntu. The most important issue is that we need to set
+#  the root password to the database in order to later on be able to create new entries.
 
 install_mysql ()
 {
@@ -129,7 +133,7 @@ install_mysql ()
 
     echo "UPDATE mysql.user SET Password=PASSWORD('${mysql_pass}') WHERE User='root';" > mysql-init
     echo "FLUSH PRIVILEGES;" >> mysql-init
-    mysqld_safe --init-file=mysql-init --nowatch
+    mysqld_safe --init-file=mysql-init &
 
     # clean up
     rm mysql-init
