@@ -129,6 +129,9 @@ install_mysql ()
 
     case ${OS_NAME} in
         "debian")
+            # Debian provides a special configuration script to security-harden MySQL
+            # post-install. Most importantly this will handle setting a password for
+            # 'root' user of the database.
             mysql_secure_installation
             ;;
         "ubuntu")
