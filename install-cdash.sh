@@ -34,6 +34,8 @@ INSTALL_PREFIX=/var/www
 # --- do not edit below this point! ------------------------------------------------------
 #
 
+basedir=`pwd`
+
 # Installation location of CDash (as part of the webserver directory)
 CDASH_PREFIX=${INSTALL_PREFIX}/CDash
 OS_NAME=""
@@ -314,6 +316,13 @@ install_cdash ()
     cd ${CDASH_PREFIX}/config
     cp config.php config.local.php
     echo "--> Creating copy of configuration file for editing - done"
+
+    echo "--> Patch CDash configuration file"
+    if [ -f ${basedir}/cdash.patch ] ; then
+        cat ${basedir}/cdash.patch | sed "s/'+++CDASH_DB_PASS+++'/${mysql_pass}/" > cdash.patch
+        git apply cdash.patch
+    fi
+    echo "--> Patch CDash configuration file - done"
 
     echo "--> Opening file 'config.local.php' for editing"
     nano config.local.php

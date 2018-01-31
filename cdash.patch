@@ -1,0 +1,18 @@
+diff --git a/config/config.local.php b/config/config.local.php
+index 7571b898..d41fca8e 100644
+--- a/config/config.local.php
++++ b/config/config.local.php
+@@ -34,11 +34,11 @@ date_default_timezone_set('UTC');
+ // Hostname of the database server or name of unix socket
+ $CDASH_DB_HOST = 'localhost';
+ // Login for database access
+-$CDASH_DB_LOGIN = 'root';
++$CDASH_DB_LOGIN = 'cdash';
+ // Port for the database (leave empty to use default)
+ $CDASH_DB_PORT = '';
+ // Password for database access
+-$CDASH_DB_PASS = '';
++$CDASH_DB_PASS = '+++CDASH_DB_PASS+++';
+ // Name of the database
+ $CDASH_DB_NAME = 'cdash';
+ // Database type
