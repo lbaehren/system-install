@@ -125,24 +125,31 @@ install_mysql ()
     apt-get install -y mysql-server
     echo "--> Installing MySQl server system package - done"
 
-    echo "--> Stopping MqSQL service"
-    service mysql stop
-    echo "--> Stopping MqSQL service - done"
+    case ${OS_NAME} in
+        "debian")
+            mysql_secure_installation
+            ;;
+        "ubuntu")
+            echo "--> Stopping MqSQL service"
+            service mysql stop
+            echo "--> Stopping MqSQL service - done"
 
-    echo "--> Creating 'init' file to be used as input"
-    echo "UPDATE mysql.user SET Password=PASSWORD('${mysql_pass}') WHERE User='root';" > mysql-init
-    echo "FLUSH PRIVILEGES;" >> mysql-init
-    echo "--> Creating 'init' file to be used as input - done"
+            echo "--> Creating 'init' file to be used as input"
+            echo "UPDATE mysql.user SET Password=PASSWORD('${mysql_pass}') WHERE User='root';" > mysql-init
+            echo "FLUSH PRIVILEGES;" >> mysql-init
+            echo "--> Creating 'init' file to be used as input - done"
 
-    echo "--> Start MySQL service using init file"
-    mysqld_safe --init-file=mysql-init &
-    echo "--> Start MySQL service using init file - done"
+            echo "--> Start MySQL service using init file"
+            mysqld_safe --init-file=mysql-init &
+            echo "--> Start MySQL service using init file - done"
 
-    # clean up
-    rm mysql-init
+            # clean up
+            rm mysql-init
 
-    echo "--> Restarting MySQL service ..."
-    service mysql start
+            echo "--> Restarting MySQL service ..."
+            service mysql start
+            ;;
+    esac
 }
 
 #_________________________________________________________________________________________
