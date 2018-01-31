@@ -121,19 +121,22 @@ check_system ()
 
 install_mysql ()
 {
-    echo "--> Installing MySQl server system package ..."
-
+    echo "--> Installing MySQl server system package"
     apt-get install -y mysql-server
+    echo "--> Installing MySQl server system package - done"
 
-    echo "--> Stopping MqSQL service ..."
-
+    echo "--> Stopping MqSQL service"
     service mysql stop
+    echo "--> Stopping MqSQL service - done"
 
-    echo "--> create 'init' file to be used as input ..."
-
+    echo "--> Creating 'init' file to be used as input"
     echo "UPDATE mysql.user SET Password=PASSWORD('${mysql_pass}') WHERE User='root';" > mysql-init
     echo "FLUSH PRIVILEGES;" >> mysql-init
+    echo "--> Creating 'init' file to be used as input - done"
+
+    echo "--> Start MySQL service using init file"
     mysqld_safe --init-file=mysql-init &
+    echo "--> Start MySQL service using init file - done"
 
     # clean up
     rm mysql-init
@@ -300,11 +303,14 @@ install_cdash ()
     cd build && \
     cmake ..
 
-    echo "--> Creating copy of configuration file for editing ..."
+    echo "--> Creating copy of configuration file for editing"
     cd ${CDASH_PREFIX}/config
     cp config.php config.local.php
-    echo "--> Opening file 'config.local.php' for editing ..."
+    echo "--> Creating copy of configuration file for editing - done"
+
+    echo "--> Opening file 'config.local.php' for editing"
     nano config.local.php
+    echo "--> Opening file 'config.local.php' for editing - done"
 
     echo "-- Install CDash ... done"
 }
@@ -319,8 +325,9 @@ configure_mysql ()
     # --- Generate batch file with set of commands to run on the MySQL database
     echo ""                                                                           > configure_mysql.sql
     echo "create database cdash;"                                                    >> configure_mysql.sql
-    echo "create user 'cdash'@'localhost' identified by '${mysql_pass}';"            >> configure_mysql.sql
-    echo "grant all privileges on cdash.* to 'cdash'@'localhost' with grant option;" >> configure_mysql.sql
+    echo "CREATE USER 'cdash'@'localhost' IDENTIFIED BY '${mysql_pass}';"            >> configure_mysql.sql
+    echo "GRANT ALL PRIVILEGES ON cdash.* TO 'cdash'@'localhost';"                   >> configure_mysql.sql
+    echo "FLUSH PRIVILEGES;"                                                         >> configure_mysql.sql
     echo "exit"                                                                      >> configure_mysql.sql
 
     # --- Run the previously created set of instructions on the database
