@@ -115,49 +115,6 @@ check_system ()
 }
 
 #_________________________________________________________________________________________
-#  Installation of MySQL server
-#
-#  When installing the MySQL server on Debian, we need a few extra steps which are handled
-#  "a bit more gracefully" on e.g. Ubuntu. The most important issue is that we need to set
-#  the root password to the database in order to later on be able to create new entries.
-
-install_mysql ()
-{
-    echo "--> Installing MySQl server system package"
-    apt-get install -y mysql-server
-    echo "--> Installing MySQl server system package - done"
-
-    case ${OS_NAME} in
-        "debian")
-            # Debian provides a special configuration script to security-harden MySQL
-            # post-install. Most importantly this will handle setting a password for
-            # 'root' user of the database.
-            mysql_secure_installation
-            ;;
-        "ubuntu")
-            echo "--> Stopping MqSQL service"
-            service mysql stop
-            echo "--> Stopping MqSQL service - done"
-
-            echo "--> Creating 'init' file to be used as input"
-            echo "UPDATE mysql.user SET Password=PASSWORD('${mysql_pass}') WHERE User='root';" > mysql-init
-            echo "FLUSH PRIVILEGES;" >> mysql-init
-            echo "--> Creating 'init' file to be used as input - done"
-
-            echo "--> Start MySQL service using init file"
-            mysqld_safe --init-file=mysql-init &
-            echo "--> Start MySQL service using init file - done"
-
-            # clean up
-            rm mysql-init
-
-            echo "--> Restarting MySQL service ..."
-            service mysql start
-            ;;
-    esac
-}
-
-#_________________________________________________________________________________________
 #  Installation of Node.js
 #
 #  In order to be consistent across our target platforms we directly retrieve Node.js
@@ -208,7 +165,8 @@ install_system_packages ()
             apt-get install -y apache2
             apt-get install -y libapache2-mod-php
             echo "--> Installing MySQL database server ..."
-            install_mysql
+            apt-get install -y mysql-server
+            mysql_secure_installation
             echo "--> Installing Node.js ..."
             install_nodejs
             echo "--> Installing PHP modules ..."
