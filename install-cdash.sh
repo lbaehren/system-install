@@ -15,6 +15,7 @@
 #  [3] https://nodejs.org/en/download/package-manager/#debian-and-ubuntu-based-linux-distributions
 #  [4] https://wiki.debian.org/MySql
 #  [5] https://github.com/Kitware/CDash.git
+#  [6] [How to install MySQL Server on Debian Stretch](https://dbahire.com/how-to-install-mysql-server-on-debian-stretch/)
 
 # ========================================================================================
 #
