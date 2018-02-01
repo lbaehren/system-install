@@ -322,7 +322,7 @@ install_cdash ()
 
     echo "--> Patch CDash configuration file"
     if [ -f ${basedir}/cdash.patch ] ; then
-        cat ${basedir}/cdash.patch | sed "s/'+++CDASH_DB_PASS+++'/${mysql_pass}/" > cdash.patch
+        cat ${basedir}/cdash.patch | sed "s/+++CDASH_DB_PASS+++/${mysql_pass}/" > cdash.patch
         git apply cdash.patch
     fi
     echo "--> Patch CDash configuration file - done"
