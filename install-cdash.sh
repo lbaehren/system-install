@@ -115,6 +115,28 @@ check_system ()
 }
 
 #_________________________________________________________________________________________
+#  Installation of MySQL
+
+install_mysql ()
+{
+    echo "deb http://repo.mysql.com/apt/debian/ stretch mysql-5.7" >> /etc/apt/sources.list.d/mysql.list
+    echo "deb-src http://repo.mysql.com/apt/debian/ stretch mysql-5.7" >> /etc/apt/sources.list.d/mysql.list
+
+    echo "--> Get public key for MySQL repo"
+    curl -k -L https://repo.mysql.com/RPM-GPG-KEY-mysql > /tmp/RPM-GPG-KEY-mysql
+    apt-key add /tmp/RPM-GPG-KEY-mysql
+    echo "--> Get public key for MySQL repo - done"
+
+    echo "--> Refresh package list"
+    apt-get update
+    echo "--> Refresh package list - done"
+
+    echo "--> Install MySQl server package"
+    apt-get -y install mysql-server
+    echo "--> Install MySQl server package - done"
+}
+
+#_________________________________________________________________________________________
 #  Installation of Node.js
 #
 #  In order to be consistent across our target platforms we directly retrieve Node.js
