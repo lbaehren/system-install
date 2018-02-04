@@ -188,8 +188,7 @@ install_system_packages ()
             apt-get install -y apache2
             apt-get install -y libapache2-mod-php
             echo "--> Installing MySQL database server ..."
-            apt-get install -y mysql-server
-            mysql_secure_installation
+            install_mysql
             echo "--> Installing Node.js ..."
             install_nodejs
             echo "--> Installing PHP modules ..."
