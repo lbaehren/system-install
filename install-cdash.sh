@@ -192,16 +192,32 @@ install_system_packages ()
             echo "--> Installing Node.js ..."
             install_nodejs
             echo "--> Installing PHP modules ..."
-            apt-get install -y php
-            apt-get install -y php-dev
-            apt-get install -y php-xmlrpc
-            apt-get install -y php-bcmath
-            apt-get install -y php-mbstring
             apt-get install -y php-xdebug
-            apt-get install -y php-xsl
-            apt-get install -y php-curl
-            apt-get install -y php-gd
-            apt-get install -y php-mysql
+
+            case ${OS_VERSION} in
+                "9")
+                    apt-get install -y php7.0
+                    apt-get install -y php7.0-dev
+                    apt-get install -y php7.0-xmlrpc
+                    apt-get install -y php7.0-bcmath
+                    apt-get install -y php7.0-mbstring
+                    apt-get install -y php7.0-xsl
+                    apt-get install -y php7.0-curl
+                    apt-get install -y php7.0-gd
+                    apt-get install -y php7.0-mysql
+                    ;;
+                *)
+                    apt-get install -y php
+                    apt-get install -y php-dev
+                    apt-get install -y php-xmlrpc
+                    apt-get install -y php-bcmath
+                    apt-get install -y php-mbstring
+                    apt-get install -y php-xsl
+                    apt-get install -y php-curl
+                    apt-get install -y php-gd
+                    apt-get install -y php-mysql
+                    ;;
+            esac
             ;;
         # --- Fedora --------------------------------------
         "fedora")
