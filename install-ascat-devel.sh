@@ -36,7 +36,7 @@ osCPE_NAME=""
 osVersion=""
 
 if [[ -f /etc/os-release ]] ; then
-    osName=`grep NAME /etc/os-release | grep -v _NAME | tr "=" "\n" | grep [a-z]`
+    osName=`grep NAME /etc/os-release | grep -v _NAME | tr "=" "\n" | tr '"' '\n' | grep [a-z]`
     osCPE_NAME=`grep CPE_NAME /etc/os-release | tr '"' '\n' | grep cpe`
     osVersion=`echo ${osCPE_NAME} | tr ":" "\n" | grep [0-9]`
 else
@@ -132,9 +132,8 @@ install_packages_fedora ()
 
 install_packages_opensuse ()
 {
-    zypper -n update
-    zypper install deltarpm nano net-tools
-    zypper install -t pattern devel_C_C++
+    zypper -n install deltarpm nano net-tools
+    zypper -n install -t pattern devel_C_C++
     # --- specific development packages ---
     for NAME in  \
         bzip2  \
@@ -147,7 +146,9 @@ install_packages_opensuse ()
         libfftw3-3-32bit \
         f2c-32bit  \
         gcc  \
+        gcc-32bit  \
         gcc-c++  \
+        gcc-c++-32bit  \
         gcc-fortran  \
         git  \
         glibc-devel  \
@@ -180,7 +181,7 @@ install_packages_opensuse ()
         zlib-devel  \
         zlib-devel-32bit
     {
-        zypper install ${NAME}
+        zypper -n install ${NAME}
     }
 }
 
@@ -300,7 +301,7 @@ case ${osName} in
     "Fedora")
         install_packages_fedora
         ;;
-    "openSUSE")
+    "openSUSE"|"openSUSE Leap")
         install_packages_opensuse
         ;;
 esac
