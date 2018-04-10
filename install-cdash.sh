@@ -184,6 +184,7 @@ install_system_packages ()
             apt-get install -y g++
             apt-get install -y nano
             apt-get install -y net-tools
+            apt-get install -y unzip
             echo "--> Installing Webserver(-modules) ..."
             apt-get install -y apache2
             apt-get install -y libapache2-mod-php
@@ -238,6 +239,7 @@ install_system_packages ()
             apt-get install -y g++
             apt-get install -y nano
             apt-get install -y net-tools
+            apt-get install -y unzip
             echo "--> Installing Webserver(-modules) ..."
             apt-get install -y apache2
             apt-get install -y libapache2-mod-php
@@ -284,14 +286,17 @@ install_cdash ()
         git checkout -b ${CDASH_VERSION}
     fi
 
-    cd ${CDASH_PREFIX}
     echo "--> Creating symbolic link to web application root directory ..."
+    cd ${CDASH_PREFIX}
     ln -s ${CDASH_PREFIX}/public ${INSTALL_PREFIX}/html/CDash
-    echo "--> Changing permissions to application folder ..."
-    mkdir -p node_modules
-    chown www-data backup log public/rss public/upload node_modules
-    chmod a+rwx backup log public/rss public/upload node_modules
     echo "--> Creating symbolic link to web application root directory ... done"
+
+    echo "--> Changing permissions to application folder ..."
+    cd ${CDASH_PREFIX}
+    mkdir -p node_modules/bufferutil/build node_modules/utf-8-validate/build
+    chown -R www-data backup log public/rss public/upload node_modules
+    chmod a+rwx backup log public/rss public/upload node_modules
+    echo "--> Changing permissions to application folder ... done"
 
     echo "--> Install PHP modules ..."
     cd ${CDASH_PREFIX}
